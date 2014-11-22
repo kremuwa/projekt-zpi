@@ -1,0 +1,11 @@
+windows-x64-vs2013/build/Debug
+windows-x64-vs2013/build/Release
+windows-x64-vs2013/build/Intermediate
+*.user
+*.ilk
+*.pdb
+*.tlog
+*.log
+*.sdf
+*.suo
+*.obj
