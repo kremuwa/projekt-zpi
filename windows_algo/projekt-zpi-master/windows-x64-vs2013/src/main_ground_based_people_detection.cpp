@@ -12,7 +12,9 @@ int main(int argc, char** argv)
 
 	int a;
 	cin >> a;
-
+	if (a == 2) {
+		obiekt.playFromKinect();
+	}
 	if (a == 3) {
 		obiekt.playFromFile("sample-pokoj.oni");
 	}

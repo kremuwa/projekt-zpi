@@ -6,7 +6,21 @@ using namespace std;
 
 boost::mutex cloud_mutex;
 int person_nr = 0;
+bool new_cloud_available_flag = false;
+pcl::people::GroundBasedPeopleDetectionApp<PointT> people_detector;
+Eigen::VectorXf ground_coeffs;
+static unsigned count = 0;
+static double last = pcl::getTime();
+vector<Eigen::Vector4f> centroids_prev;
+vector<Eigen::Vector4f> centroids_curr;
+int empty_in_row = 0;
+float min_confidence = -1.5;
+pcl::Grabber* interface;
 
+bool flag1 = true;
+bool flag2 = false;
+
+boost::function<void(const pcl::PointCloud<pcl::PointXYZRGBA>::ConstPtr&)> f;
 // definitions of global functions
 
 void cloud_cb_(const PointCloudT::ConstPtr &callback_cloud, PointCloudT::Ptr& cloud,
@@ -66,7 +80,7 @@ Algorithm::Algorithm(pcl::visualization::PCLVisualizer *_viewer) {
 	svm_filename = "trainedLinearSVMForPeopleDetectionWithHOG.yaml";
 	
 	viewer = _viewer;
-	min_confidence = -1.5;
+	
 	min_height = 1.3;
 	max_height = 2.3;
 	dist = 0.2;
@@ -85,13 +99,16 @@ void Algorithm::playFromKinect()
 	playFromFile();
 }
 
+
+
+
 void Algorithm::playFromFile(string filename)
 {
 
 	PointCloudT::Ptr cloud(new PointCloudT);
-	bool new_cloud_available_flag = false;
-	pcl::Grabber* interface = new pcl::OpenNIGrabber(filename);
-	boost::function<void(const pcl::PointCloud<pcl::PointXYZRGBA>::ConstPtr&)> f = boost::bind(&cloud_cb_, _1, cloud, &new_cloud_available_flag);
+	
+	interface = new pcl::OpenNIGrabber(filename);
+	f = boost::bind(&cloud_cb_, _1, cloud, &new_cloud_available_flag);
 	interface->registerCallback(f);
 	interface->start();
 
@@ -126,7 +143,6 @@ void Algorithm::playFromFile(string filename)
 	cloud_mutex.unlock();
 
 	// Ground plane estimation:
-	Eigen::VectorXf ground_coeffs;
 	ground_coeffs.resize(4);
 	std::vector<int> clicked_points_indices;
 	for (unsigned int i = 0; i < clicked_points_3d->points.size(); i++)
@@ -140,7 +156,7 @@ void Algorithm::playFromFile(string filename)
 	person_classifier.loadSVMFromFile(svm_filename);   // load trained SVM
 
 	// People detection app initialization:
-	pcl::people::GroundBasedPeopleDetectionApp<PointT> people_detector;    // people detection object
+   // people detection object
 	people_detector.setVoxelSize(voxel_size);                        // set the voxel size
 	people_detector.setIntrinsics(rgb_intrinsics_matrix);            // set RGB camera intrinsic parameters
 	people_detector.setClassifier(person_classifier);                // set person classifier
@@ -148,16 +164,14 @@ void Algorithm::playFromFile(string filename)
 	people_detector.setPersonClusterLimits(min_height, max_height, 0.1, 8.0); // set person height limits
 
 	// For timing:
-	static unsigned count = 0;
-	static double last = pcl::getTime();
 	
-	vector<Eigen::Vector4f> centroids_prev;
-	vector<Eigen::Vector4f> centroids_curr;
-	int empty_in_row = 0;
 
 	// Main loop:
+	mainLoop(viewer, cloud, dist);
 
-	while (true)
+
+
+		/*	while (true)
 	{
 		if (new_cloud_available_flag && cloud_mutex.try_lock())    // if a new cloud is available
 		{
@@ -250,12 +264,114 @@ void Algorithm::playFromFile(string filename)
 
 			if (k > 0)centroids_prev = centroids_curr;
 
-			cout << " liczba elementow wektora w miejscu b: " << centroids_curr.size() << endl;
 			std::cout << k << " people found" << std::endl;
 			viewer->spinOnce();
 
 			cloud_mutex.unlock();
 
+		}
+	}*/
+}
+
+void mainLoop(pcl::visualization::PCLVisualizer *viewer, PointCloudT::Ptr cloud, float dist)
+{
+	while (true)
+	{
+		
+		if (new_cloud_available_flag && cloud_mutex.try_lock())    // if a new cloud is available
+		{
+			new_cloud_available_flag = false;
+
+			// Perform people detection on the new cloud:
+			std::vector<pcl::people::PersonCluster<PointT> > clusters;   // vector containing persons clusters
+			people_detector.setInputCloud(cloud);
+			people_detector.setGround(ground_coeffs);                    // set floor coefficients
+			people_detector.compute(clusters);                           // perform people detection
+
+			ground_coeffs = people_detector.getGround();                 // get updated floor coefficients
+
+
+			// Draw cloud and people bounding boxes in the viewer:
+			viewer->removeAllPointClouds();
+			viewer->removeAllShapes();
+
+			pcl::visualization::PointCloudColorHandlerRGBField<PointT> rgb(cloud);
+			viewer->addPointCloud<PointT>(cloud, rgb, "input_cloud");
+
+			unsigned int k = 0;
+			
+			centroids_curr.clear();
+
+			for (std::vector<pcl::people::PersonCluster<PointT> >::iterator it = clusters.begin(); it != clusters.end(); ++it)
+			{
+				if (it->getPersonConfidence() > min_confidence)             // draw only people with confidence above a threshold
+				{
+					Eigen::Vector3f centroid_coords; //vector containing persons centroid coordinates
+
+					centroid_coords = it->getCenter(); // calculate centroid coordinates
+
+					int person_on_screen; // person number displayed on screen
+
+					person_on_screen = if_same_person(centroids_prev, centroid_coords, dist); // check if current person existed in prev frame
+
+					// add coordinates to vector containing people from current frame
+
+					float x = centroid_coords[0]; // extract x coordinate of centroid
+					float y = centroid_coords[1]; // extract y coordinate of centroid
+					float z = centroid_coords[2]; // extract z coorfinate of centroid
+
+					PointT pp;
+					pp.getVector3fMap() = it->getCenter();
+
+					Eigen::Vector4f centroid_coords_person;
+					centroid_coords_person[0] = x;
+					centroid_coords_person[1] = y;
+					centroid_coords_person[2] = z;
+					centroid_coords_person[3] = (float)person_on_screen;
+					centroids_curr.push_back(centroid_coords_person);
+
+					// draw theoretical person bounding box in the PCL viewer:
+					it->drawTBoundingBox(*viewer, k); // draw persons bounding box
+
+					cout << "tesst";
+					//creating text to display near person box
+					string tekst = "person ";
+
+					string Result;
+
+					ostringstream convert;
+
+					convert << person_on_screen;
+
+					Result = convert.str();
+
+					tekst = tekst + Result;
+
+					viewer->addText3D(tekst, pp, 0.08); // display text
+					k++;
+
+					cout << "-------------";
+				}
+			}
+
+			if (k == 0)
+			{
+				empty_in_row++;
+				cout << "Empty in a row: " << empty_in_row;
+			}
+			else empty_in_row = 0;
+
+			if (empty_in_row == 3) {
+				cout << "Czyszcze wektor przechowujacy dane o postaciach";
+				centroids_prev.clear();
+			}
+
+			if (k > 0)centroids_prev = centroids_curr;
+
+			std::cout << k << " people found" << std::endl;
+			viewer->spinOnce();
+
+			cloud_mutex.unlock();
 		}
 	}
 }

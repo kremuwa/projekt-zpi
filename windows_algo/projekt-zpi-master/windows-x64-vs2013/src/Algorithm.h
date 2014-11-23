@@ -40,6 +40,8 @@ struct callback_args {
 
 };
 
+void mainLoop(pcl::visualization::PCLVisualizer *viewer, PointCloudT::Ptr cloud, float dist);
+
 class Algorithm
 {
 
