@@ -19,6 +19,10 @@ int main(int argc, char** argv)
 		obiekt.playFromFile("sample-pokoj.oni", 2);
 	}
 
+	if (a == 3){
+		obiekt.playFromFile("sample-pokoj.oni", 3);
+	}
+
 	cin >> a;
 	return 0;
 

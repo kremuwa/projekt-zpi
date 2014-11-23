@@ -48,6 +48,8 @@ void mainLoopPlain(pcl::visualization::PCLVisualizer *viewer, PointCloudT::Ptr c
 
 void setFloor();
 
+void startRecording(std::string PCDfilepath, std::string TRJfilepath, pcl::visualization::PCLVisualizer *viewer, PointCloudT::Ptr &cloud, float dist, bool& new_cloud_available_flag);
+
 class Algorithm
 {
 
@@ -79,13 +81,14 @@ public:
 	void stopPlaying();
 	void startAlgorithm();
 	void stopAlgorithm();
-	void startRecording(std::string PCDfilepath, std::string TRJfilepath);
+//	void startRecording(std::string PCDfilepath, std::string TRJfilepath);
 	void stopRecording();
-
+	
 	void setMinConf(float a);
 	void setMinHeight(float a);
 	void setMaxHeight(float a);
 	void setDist(float a);
 	
-
+	void playAlgorithm();
 };
+
