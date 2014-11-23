@@ -259,6 +259,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Algorithm.cpp" />
     <ClCompile Include="..\src\main_ground_based_people_detection.cpp" />
     <ClCompile Include="..\src\openni\oni_grabber.cpp" />
     <ClCompile Include="..\src\openni\openni_camera\openni_depth_image.cpp" />
@@ -274,6 +275,9 @@
     <ClCompile Include="..\src\openni\openni_camera\openni_image_yuv_422.cpp" />
     <ClCompile Include="..\src\openni\openni_camera\openni_ir_image.cpp" />
     <ClCompile Include="..\src\openni\openni_grabber.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\Algorithm.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
