@@ -6,7 +6,7 @@ using namespace std;
 
 boost::mutex cloud_mutex;
 int person_nr = 0;
-bool new_cloud_available_flag = false;
+
 pcl::people::GroundBasedPeopleDetectionApp<PointT> people_detector;
 Eigen::VectorXf ground_coeffs;
 static unsigned count = 0;
@@ -16,9 +16,11 @@ vector<Eigen::Vector4f> centroids_curr;
 int empty_in_row = 0;
 float min_confidence = -1.5;
 pcl::Grabber* interface;
+bool floor_tagged = false;
+
 
 bool flag1 = true;
-bool flag2 = false;
+bool flag2 = true;
 
 boost::function<void(const pcl::PointCloud<pcl::PointXYZRGBA>::ConstPtr&)> f;
 // definitions of global functions
@@ -102,9 +104,8 @@ void Algorithm::playFromKinect()
 
 
 
-void Algorithm::playFromFile(string filename)
+void Algorithm::playFromFile(string filename, int mode)
 {
-
 	PointCloudT::Ptr cloud(new PointCloudT);
 	
 	interface = new pcl::OpenNIGrabber(filename);
@@ -126,170 +127,105 @@ void Algorithm::playFromFile(string filename)
 
 	// Add point picking callback to viewer:
 		
-	callback_args cb_args;
-	PointCloudT::Ptr clicked_points_3d(new PointCloudT);
-	cb_args.clicked_points_3d = clicked_points_3d;
-	cb_args.viewerPtr = pcl::visualization::PCLVisualizer::Ptr(viewer);
-	viewer->registerPointPickingCallback(pp_callback, (void*)&cb_args);
-
-	cout << "Kliknij w 3 punkty na podlodze trzymajac wcisniety SHIFT";
-	viewer->addText("Kliknij w 3 punkty na podlodze trzymajac wcisniety SHIFT", 250, 300, 20, 1, 1, 1);
-	viewer->addText("Nastepnie nacisnij klawisz Q", 250, 250, 20, 1, 1, 1);
-
-	// Spin until 'Q' is pressed:
-	viewer->spin();
-	std::cout << "Gotowe." << std::endl;
-
-	cloud_mutex.unlock();
-
-	// Ground plane estimation:
-	ground_coeffs.resize(4);
-	std::vector<int> clicked_points_indices;
-	for (unsigned int i = 0; i < clicked_points_3d->points.size(); i++)
-		clicked_points_indices.push_back(i);
-	pcl::SampleConsensusModelPlane<PointT> model_plane(clicked_points_3d);
-	model_plane.computeModelCoefficients(clicked_points_indices, ground_coeffs);
-	std::cout << "Ground plane: " << ground_coeffs(0) << " " << ground_coeffs(1) << " " << ground_coeffs(2) << " " << ground_coeffs(3) << std::endl;
-
-	// Create classifier for people detection:  
-	pcl::people::PersonClassifier<pcl::RGB> person_classifier;
-	person_classifier.loadSVMFromFile(svm_filename);   // load trained SVM
-
-	// People detection app initialization:
-   // people detection object
-	people_detector.setVoxelSize(voxel_size);                        // set the voxel size
-	people_detector.setIntrinsics(rgb_intrinsics_matrix);            // set RGB camera intrinsic parameters
-	people_detector.setClassifier(person_classifier);                // set person classifier
-	//	  people_detector.setHeightLimits(min_height, max_height);         // set person height limits
-	people_detector.setPersonClusterLimits(min_height, max_height, 0.1, 8.0); // set person height limits
-
-	// For timing:
+	//setFloor(viewer, svm_filename, voxel_size, rgb_intrinsics_matrix, min_height, max_height);
+	
+	
 	
 
 	// Main loop:
-	mainLoop(viewer, cloud, dist);
+	if (mode == 1)
+	{
+		cloud_mutex.unlock();
+		mainLoopPlain(viewer, cloud, new_cloud_available_flag);
+	}
+
+	if (mode == 2)
+	{
+		callback_args cb_args;
+		PointCloudT::Ptr clicked_points_3d(new PointCloudT);
+		cb_args.clicked_points_3d = clicked_points_3d;
+		cb_args.viewerPtr = pcl::visualization::PCLVisualizer::Ptr(viewer);
+		viewer->registerPointPickingCallback(pp_callback, (void*)&cb_args);
+
+		cout << "Kliknij w 3 punkty na podlodze trzymajac wcisniety SHIFT";
+		viewer->addText("Kliknij w 3 punkty na podlodze trzymajac wcisniety SHIFT", 250, 300, 20, 1, 1, 1);
+		viewer->addText("Nastepnie nacisnij klawisz Q", 250, 250, 20, 1, 1, 1);
+
+		// Spin until 'Q' is pressed:
+		viewer->spin();
+		std::cout << "Gotowe." << std::endl;
 
 
+		cloud_mutex.unlock();
 
-		/*	while (true)
+		// Ground plane estimation:
+		ground_coeffs.resize(4);
+		std::vector<int> clicked_points_indices;
+		for (unsigned int i = 0; i < clicked_points_3d->points.size(); i++)
+			clicked_points_indices.push_back(i);
+		pcl::SampleConsensusModelPlane<PointT> model_plane(clicked_points_3d);
+		model_plane.computeModelCoefficients(clicked_points_indices, ground_coeffs);
+		std::cout << "Ground plane: " << ground_coeffs(0) << " " << ground_coeffs(1) << " " << ground_coeffs(2) << " " << ground_coeffs(3) << std::endl;
+
+		// Create classifier for people detection:  
+		pcl::people::PersonClassifier<pcl::RGB> person_classifier;
+		person_classifier.loadSVMFromFile(svm_filename);   // load trained SVM
+
+		// People detection app initialization:
+		// people detection object
+		people_detector.setVoxelSize(voxel_size);                        // set the voxel size
+		people_detector.setIntrinsics(rgb_intrinsics_matrix);            // set RGB camera intrinsic parameters
+		people_detector.setClassifier(person_classifier);                // set person classifier
+		// people_detector.setHeightLimits(min_height, max_height);         // set person height limits
+		people_detector.setPersonClusterLimits(min_height, max_height, 0.1, 8.0); // set person height limits
+		floor_tagged = true;
+		// For timing:
+		mainLoopAlgorithm(viewer, cloud, dist, new_cloud_available_flag);
+	}
+
+	//mainLoopPlain(viewer, cloud, new_cloud_available_flag);
+	
+}
+
+void mainLoopPlain(pcl::visualization::PCLVisualizer *viewer, PointCloudT::Ptr cloud, bool &new_cloud_available_flag)
+{
+	while (true)
 	{
 		if (new_cloud_available_flag && cloud_mutex.try_lock())    // if a new cloud is available
 		{
 			new_cloud_available_flag = false;
 
-			// Perform people detection on the new cloud:
-			std::vector<pcl::people::PersonCluster<PointT> > clusters;   // vector containing persons clusters
-			people_detector.setInputCloud(cloud);
-			people_detector.setGround(ground_coeffs);                    // set floor coefficients
-			people_detector.compute(clusters);                           // perform people detection
-
-			ground_coeffs = people_detector.getGround();                 // get updated floor coefficients
-
-
 			// Draw cloud and people bounding boxes in the viewer:
 			viewer->removeAllPointClouds();
 			viewer->removeAllShapes();
-			
+
 			pcl::visualization::PointCloudColorHandlerRGBField<PointT> rgb(cloud);
 			viewer->addPointCloud<PointT>(cloud, rgb, "input_cloud");
-			
-			unsigned int k = 0;
 
-			
-			centroids_curr.clear();
-
-			for (std::vector<pcl::people::PersonCluster<PointT> >::iterator it = clusters.begin(); it != clusters.end(); ++it)
-			{
-				if (it->getPersonConfidence() > min_confidence)             // draw only people with confidence above a threshold
-				{
-					Eigen::Vector3f centroid_coords; //vector containing persons centroid coordinates
-
-					centroid_coords = it->getCenter(); // calculate centroid coordinates
-
-					int person_on_screen; // person number displayed on screen
-
-					person_on_screen = if_same_person(centroids_prev, centroid_coords, dist); // check if current person existed in prev frame
-
-					// add coordinates to vector containing people from current frame
-
-					float x = centroid_coords[0]; // extract x coordinate of centroid
-					float y = centroid_coords[1]; // extract y coordinate of centroid
-					float z = centroid_coords[2]; // extract z coorfinate of centroid
-
-					PointT pp;
-					pp.getVector3fMap() = it->getCenter();
-
-					Eigen::Vector4f centroid_coords_person;
-					centroid_coords_person[0] = x;
-					centroid_coords_person[1] = y;
-					centroid_coords_person[2] = z;
-					centroid_coords_person[3] = (float)person_on_screen;
-					centroids_curr.push_back(centroid_coords_person);
-
-					// draw theoretical person bounding box in the PCL viewer:
-					it->drawTBoundingBox(*viewer, k); // draw persons bounding box
-
-					cout << "tesst";
-					//creating text to display near person box
-					string tekst = "person ";
-
-					string Result;
-
-					ostringstream convert;
-
-					convert << person_on_screen;
-
-					Result = convert.str();
-
-					tekst = tekst + Result;
-
-					viewer->addText3D(tekst, pp, 0.08); // display text
-					k++;
-
-					cout << "-------------";
-				}
-			}
-
-			if (k == 0)
-			{
-				empty_in_row++;
-				cout << "Rmpty in a row: " << empty_in_row;
-			}
-			else empty_in_row = 0;
-
-			if (empty_in_row == 3) {
-				cout << "Czyszcze wektor przechowujacy dane o postaciach";
-				centroids_prev.clear();
-			}
-
-			if (k > 0)centroids_prev = centroids_curr;
-
-			std::cout << k << " people found" << std::endl;
 			viewer->spinOnce();
 
 			cloud_mutex.unlock();
 
 		}
-	}*/
+	}
+
 }
 
-void mainLoop(pcl::visualization::PCLVisualizer *viewer, PointCloudT::Ptr cloud, float dist)
+
+void mainLoopAlgorithm(pcl::visualization::PCLVisualizer *viewer, PointCloudT::Ptr &cloud, float dist, bool& new_cloud_available_flag)
 {
-	while (true)
+	while (flag2)
 	{
-		
 		if (new_cloud_available_flag && cloud_mutex.try_lock())    // if a new cloud is available
 		{
 			new_cloud_available_flag = false;
-
 			// Perform people detection on the new cloud:
 			std::vector<pcl::people::PersonCluster<PointT> > clusters;   // vector containing persons clusters
 			people_detector.setInputCloud(cloud);
 			people_detector.setGround(ground_coeffs);                    // set floor coefficients
 			people_detector.compute(clusters);                           // perform people detection
-
 			ground_coeffs = people_detector.getGround();                 // get updated floor coefficients
-
+		
 
 			// Draw cloud and people bounding boxes in the viewer:
 			viewer->removeAllPointClouds();
@@ -376,9 +312,11 @@ void mainLoop(pcl::visualization::PCLVisualizer *viewer, PointCloudT::Ptr cloud,
 	}
 }
 
+
+
 void Algorithm::stopPlaying()
 {
-
+	flag2 = false;
 }
 
 void Algorithm::startAlgorithm()
@@ -423,4 +361,47 @@ void Algorithm::setMaxHeight(float a)
 void Algorithm::setDist(float a)
 {
 	dist = a;
+}
+
+void setFloor(pcl::visualization::PCLVisualizer *viewer, string svm_filename, float voxel_size, Eigen::Matrix3f rgb_intrinsics_matrix, float min_height, float max_height)
+{
+	callback_args cb_args;
+	PointCloudT::Ptr clicked_points_3d(new PointCloudT);
+	cb_args.clicked_points_3d = clicked_points_3d;
+	cb_args.viewerPtr = pcl::visualization::PCLVisualizer::Ptr(viewer);
+	viewer->registerPointPickingCallback(pp_callback, (void*)&cb_args);
+
+	cout << "Kliknij w 3 punkty na podlodze trzymajac wcisniety SHIFT";
+	viewer->addText("Kliknij w 3 punkty na podlodze trzymajac wcisniety SHIFT", 250, 300, 20, 1, 1, 1);
+	viewer->addText("Nastepnie nacisnij klawisz Q", 250, 250, 20, 1, 1, 1);
+
+	// Spin until 'Q' is pressed:
+	viewer->spin();
+	std::cout << "Gotowe." << std::endl;
+	
+
+	cloud_mutex.unlock();
+
+	// Ground plane estimation:
+	ground_coeffs.resize(4);
+	std::vector<int> clicked_points_indices;
+
+	for (unsigned int i = 0; i < clicked_points_3d->points.size(); i++)
+		clicked_points_indices.push_back(i);
+		pcl::SampleConsensusModelPlane<PointT> model_plane(clicked_points_3d);
+		model_plane.computeModelCoefficients(clicked_points_indices, ground_coeffs);
+		std::cout << "Ground plane: " << ground_coeffs(0) << " " << ground_coeffs(1) << " " << ground_coeffs(2) << " " << ground_coeffs(3) << std::endl;
+
+		// Create classifier for people detection:
+		pcl::people::PersonClassifier<pcl::RGB> person_classifier;
+		person_classifier.loadSVMFromFile(svm_filename);   // load trained SVM
+
+		// People detection app initialization:
+		// people detection object
+		people_detector.setVoxelSize(voxel_size);                        // set the voxel size
+		people_detector.setIntrinsics(rgb_intrinsics_matrix);            // set RGB camera intrinsic parameters
+		people_detector.setClassifier(person_classifier);                // set person classifier
+		//	  people_detector.setHeightLimits(min_height, max_height);         // set person height limits
+			people_detector.setPersonClusterLimits(min_height, max_height, 0.1, 8.0); // set person height limits
+		floor_tagged = true;
 }
