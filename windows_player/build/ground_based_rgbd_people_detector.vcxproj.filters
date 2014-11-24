@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\src\main_ground_based_people_detection.cpp" />
+    <ClCompile Include="..\src\openni\oni_grabber.cpp" />
+    <ClCompile Include="..\src\openni\openni_camera\openni_depth_image.cpp" />
+    <ClCompile Include="..\src\openni\openni_camera\openni_device.cpp" />
+    <ClCompile Include="..\src\openni\openni_camera\openni_device_kinect.cpp" />
+    <ClCompile Include="..\src\openni\openni_camera\openni_device_oni.cpp" />
+    <ClCompile Include="..\src\openni\openni_camera\openni_device_primesense.cpp" />
+    <ClCompile Include="..\src\openni\openni_camera\openni_device_xtion.cpp" />
+    <ClCompile Include="..\src\openni\openni_camera\openni_driver.cpp" />
+    <ClCompile Include="..\src\openni\openni_camera\openni_exception.cpp" />
+    <ClCompile Include="..\src\openni\openni_camera\openni_image_bayer_grbg.cpp" />
+    <ClCompile Include="..\src\openni\openni_camera\openni_image_rgb24.cpp" />
+    <ClCompile Include="..\src\openni\openni_camera\openni_image_yuv_422.cpp" />
+    <ClCompile Include="..\src\openni\openni_camera\openni_ir_image.cpp" />
+    <ClCompile Include="..\src\openni\openni_grabber.cpp" />
+    <ClCompile Include="..\src\Player.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{45AA6F77-7E9B-44FE-80EA-DC0F69AF1B82}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="..\src\Player.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ground_based_rgbd_people_detector.rc" />
+  </ItemGroup>
+</Project>
