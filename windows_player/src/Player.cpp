@@ -1,7 +1,7 @@
 #include "Player.h"
 
 
-Player::Player(pcl::visualization::PCLVisualizer *_viewer) {
+Player::Player(VisualiserT *_viewer) {
 	this->viewer = _viewer;
 }
 

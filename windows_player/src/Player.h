@@ -18,6 +18,8 @@
 
 typedef pcl::PointXYZRGBA PointT;
 typedef pcl::PointCloud<PointT> PointCloudT;
+typedef pcl::people::PersonCluster<PointT> PeopleClusterT;
+typedef pcl::visualization::PCLVisualizer VisualiserT;
 
 class Reader {
 public:
@@ -28,7 +30,7 @@ public:
 	int total_frames;
 
 	void startReading(std::string file);
-	std::pair < pcl::PointCloud<PointT>, std::pair<int, std::vector<pcl::people::PersonCluster<PointT>>>> read();
+	std::pair < PointCloudT, std::pair<int, std::vector<PeopleClusterT>>> read();
 	void jumpTo(int frame);
 	int getCurFrame();
 	int getTotalFrames();
@@ -38,12 +40,12 @@ public:
 
 class Player {
 public:
-	pcl::visualization::PCLVisualizer *viewer;
+	VisualiserT *viewer;
 	int current_frame;
 	int total_frames;
 	Reader *reader;
 
-	Player(pcl::visualization::PCLVisualizer *_viewer);
+	Player(VisualiserT *_viewer);
 	~Player();
 
 	void initialize(std::string file);
