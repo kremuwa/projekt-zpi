@@ -40,14 +40,21 @@ struct callback_args {
 
 };
 
-void mainLoop(pcl::visualization::PCLVisualizer *viewer, PointCloudT::Ptr cloud, float dist);
+void mainLoopAlgorithm(pcl::visualization::PCLVisualizer *viewer, PointCloudT::Ptr &cloud, float dist, bool& new_cloud_available_flag);
+
+void setFloor(pcl::visualization::PCLVisualizer *viewer, std::string svm_filename, float voxel_size, Eigen::Matrix3f rgb_intrinsics_matrix, float min_height, float max_height);
+
+void mainLoopPlain(pcl::visualization::PCLVisualizer *viewer, PointCloudT::Ptr cloud, bool &new_cloud_available_flag);
+
+void setFloor();
+
+void startRecording(std::string PCDfilepath, std::string TRJfilepath, pcl::visualization::PCLVisualizer *viewer, PointCloudT::Ptr &cloud, float dist, bool& new_cloud_available_flag);
 
 class Algorithm
 {
 
 public:
 
-	Eigen::VectorXf ground_coeffs;
 	float voxel_size;
 	std::string svm_filename;
 	Eigen::Matrix3f rgb_intrinsics_matrix;
@@ -70,16 +77,18 @@ public:
 	Algorithm(pcl::visualization::PCLVisualizer *_viewer);
 
 	void playFromKinect();
-	void playFromFile(std::string filename = "");
+	void playFromFile(std::string filename = "", int mode = 1);
 	void stopPlaying();
 	void startAlgorithm();
 	void stopAlgorithm();
-	void startRecording(std::string PCDfilepath, std::string TRJfilepath);
+//	void startRecording(std::string PCDfilepath, std::string TRJfilepath);
 	void stopRecording();
-
+	
 	void setMinConf(float a);
 	void setMinHeight(float a);
 	void setMaxHeight(float a);
 	void setDist(float a);
-
+	
+	void playAlgorithm();
 };
+
