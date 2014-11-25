@@ -94,6 +94,28 @@ int main (int argc, char** argv)
   viewer.addPointCloud<PointT> (cloud, rgb, "input_cloud");
   viewer.setCameraPosition(0,0,-2,0,-1,0,0);
 
+
+// aaaaaaaaaaaaaaaaaaa
+
+  cubeStruct cube;
+
+  Player play(&viewer);
+
+  cube.name = "chuj";
+  cube.x_min = 1;
+  cube.x_max = 3;
+  cube.y_min = 1;
+  cube.y_max = 3;
+  cube.y_min = 1;
+  cube.z_max = 3;
+
+  play.drawCube(cube);
+
+
+  // aaaaaaaaaaaaaaaaaaaaaaaaaa
+
+
+
   // Add point picking callback to viewer:
   struct callback_args cb_args;
   PointCloudT::Ptr clicked_points_3d (new PointCloudT);

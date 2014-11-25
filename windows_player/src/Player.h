@@ -12,6 +12,7 @@
 
 
 #include <pcl/people/person_cluster.h>
+#include <pcl/ModelCoefficients.h>
 #include <string>
 #include <utility>
 #include <iostream>
@@ -20,6 +21,16 @@ typedef pcl::PointXYZRGBA PointT;
 typedef pcl::PointCloud<PointT> PointCloudT;
 typedef pcl::people::PersonCluster<PointT> PeopleClusterT;
 typedef pcl::visualization::PCLVisualizer VisualiserT;
+
+typedef struct {
+	std::string name;
+	double x_min;
+	double x_max;
+	double y_min;
+	double y_max;
+	double z_min;
+	double z_max;
+} cubeStruct;
 
 class Reader {
 public:
@@ -56,5 +67,9 @@ public:
 	void play();
 	void pause();
 	void stop();
+	void drawLine(cubeStruct cube);
+	void drawCube(cubeStruct cube);
+
+	std::string randomString(size_t len);
 };
 
