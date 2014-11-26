@@ -22,24 +22,7 @@ frameStruct Reader::read() {
 	cubeStruct cube2;
 
 	if (this->current_frame == 0){
-		cube1.name = "Pierwszy czlowieczek";
-		cube1.x_min = 1;
-		cube1.x_max = 1.5;
-		cube1.y_min = 0.3;
-		cube1.y_max = 2.3;
-		cube1.z_min = 1.2;
-		cube1.z_max = 1.4;
-
-		cube2.name = "Drugi humanoid";
-		cube2.x_min = 3;
-		cube2.x_max = 3.5;
-		cube2.y_min = 0.3;
-		cube2.y_max = 2.3;
-		cube2.z_min = 2.2;
-		cube2.z_max = 2.4;
-	}
-	else {
-		cube1.name = "Pierwszy czlowieczek";
+		cube1.name = "(iter 1) Pierwszy czlowieczek";
 		cube1.x_min = 2;
 		cube1.x_max = 2.5;
 		cube1.y_min = 1.3;
@@ -47,7 +30,24 @@ frameStruct Reader::read() {
 		cube1.z_min = 2.2;
 		cube1.z_max = 2.4;
 
-		cube2.name = "Drugi humanoid";
+		cube2.name = "(iter 1) Drugi humanoid";
+		cube2.x_min = 4;
+		cube2.x_max = 4.5;
+		cube2.y_min = 1.3;
+		cube2.y_max = 3.3;
+		cube2.z_min = 3.2;
+		cube2.z_max = 3.4;
+	}
+	else {
+		cube1.name = "(iter 2) Pierwszy czlowieczek";
+		cube1.x_min = 2;
+		cube1.x_max = 2.5;
+		cube1.y_min = 1.3;
+		cube1.y_max = 2.3;
+		cube1.z_min = 2.2;
+		cube1.z_max = 2.4;
+
+		cube2.name = "(iter 2) Drugi humanoid";
 		cube2.x_min = 4;
 		cube2.x_max = 4.5;
 		cube2.y_min = 1.3;
@@ -68,8 +68,8 @@ frameStruct Reader::read() {
 // debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only!
 
 
-Player::Player(VisualiserT *_viewer) {
-	this->viewer = _viewer;
+Player::Player() {
+	//this->viewer = _viewer;
 	this->reader = new Reader();
 	this->mutex.initialize();
 	this->pause_toggle = false;
@@ -77,7 +77,7 @@ Player::Player(VisualiserT *_viewer) {
 }
 
 Player::~Player(){
-	this->viewer = NULL;
+	//this->viewer = NULL;
 	this->reader = NULL;
 }
 
@@ -126,15 +126,15 @@ void Player::pause(){
 
 void Player::stop(){
 	if (this->debug){ std::cout << "STOPPED!!! " << std::endl; }
-	this->viewer->removeAllPointClouds();
-	this->viewer->removeAllShapes();
 	this->pause_toggle = false;
+	this->thread.interrupt();
 }
 
 void Player::play(){
 	this->thread=boost::thread (&play_thread, this);
-	//boost::this_thread::sleep(boost::posix_time::milliseconds(2500));
-	//this->debug = false;
+	// stop dziala, chociaz tyle.
+	//boost::this_thread::sleep(boost::posix_time::milliseconds(1500));
+	//this->stop();
 	thread.join();
 }
 
@@ -146,6 +146,9 @@ void play_thread(Player *player){
 	int totalFrames = player->getTotalFrames();
 	int lastFrameTime = 0;
 	frameStruct frame;
+
+	VisualiserT viewer("PCL test");
+	viewer.addText("copyright GW.", 50, 8);
 
 	while (currentFrame < totalFrames) {
 		if (player->getDebug()){ std::cout << "PLAY iteruje sie po klatkce " << currentFrame << std::endl; }
@@ -160,17 +163,17 @@ void play_thread(Player *player){
 			boost::shared_ptr<PointCloudT> cloud = boost::make_shared<PointCloudT>(*frame.cloud);
 			//cloud = frame.cloud;
 
-			player->viewer->removeAllPointClouds();
-			player->viewer->removeAllShapes();
+			viewer.removeAllPointClouds();
+			viewer.removeAllShapes();
 
 			pcl::visualization::PointCloudColorHandlerRGBField<PointT> rgb(cloud);
-			player->viewer->addPointCloud<PointT>(cloud, rgb, "input_cloud");
-			player->viewer->setCameraPosition(-4, -1, -3, 0, -1, 0, 0);
+			viewer.addPointCloud<PointT>(cloud, rgb, "input_cloud");
+			viewer.setCameraPosition(-4, -1, -3, 0, -1, 0, 0);
 
 			for (unsigned short int i = 0; i < frame.people.size(); i++){
-				player->drawCube(frame.people.at(i));
+				player->drawCube(frame.people.at(i), &viewer);
 			}
-			
+
 			//w wersji zlaczonej z Grzeskiem K.  boost::this_thread::sleep(boost::posix_time::milliseconds(frame.frame_time - lastFrameTime));
 			boost::this_thread::sleep(boost::posix_time::milliseconds(2000));
 
@@ -185,6 +188,8 @@ void play_thread(Player *player){
 			boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
 		}
 	}
+	std::cout << "press 'Q' to quit" << std::endl;
+	viewer.spin();
 }
 
 
@@ -193,7 +198,7 @@ void play_thread(Player *player){
 
 
 
-void Player::drawLine(cubeStruct cube, bool showName) {
+void Player::drawLine(cubeStruct cube, bool showName, VisualiserT *viewer) {
 	PointT p1, p2;
 
 	p1.x = cube.x_min;
@@ -203,14 +208,14 @@ void Player::drawLine(cubeStruct cube, bool showName) {
 	p2.y = cube.y_max;
 	p2.z = cube.z_max;
 
-	this->viewer->addLine(p1, p2, (double)0, (double)255, (double)0, (const std::string)this->randomString(6));
+	viewer->addLine(p1, p2, (double)0, (double)255, (double)0, (const std::string)this->randomString(6));
 
 	if (showName){
-		this->viewer->addText3D((const std::string)cube.name, p1, 0.1, 1.0, 1.0, 1.0, (const std::string)this->randomString(6));
+		viewer->addText3D((const std::string)cube.name, p1, 0.1, 1.0, 1.0, 1.0, (const std::string)this->randomString(6));
 	}
 }
 
-void Player::drawCube(cubeStruct cube) {
+void Player::drawCube(cubeStruct cube, VisualiserT *viewer) {
 
 	cubeStruct line;
 	line.name = cube.name;
@@ -224,7 +229,7 @@ void Player::drawCube(cubeStruct cube) {
 	line.y_max = cube.y_min;
 	line.z_max = cube.z_min;
 
-	this->drawLine(line, true);
+	this->drawLine(line, true, viewer);
 
 	// 0,0,0 -> 0,1,0
 	line.x_min = cube.x_min;
@@ -235,7 +240,7 @@ void Player::drawCube(cubeStruct cube) {
 	line.y_max = cube.y_max;
 	line.z_max = cube.z_min;
 
-	this->drawLine(line, false);
+	this->drawLine(line, false, viewer);
 
 	// 0,0,0 -> 0,0,1
 	line.x_min = cube.x_min;
@@ -246,7 +251,7 @@ void Player::drawCube(cubeStruct cube) {
 	line.y_max = cube.y_min;
 	line.z_max = cube.z_max;
 
-	this->drawLine(line, false);
+	this->drawLine(line, false, viewer);
 
 	// 1,0,0 -> 1,1,0
 	line.x_min = cube.x_max;
@@ -257,7 +262,7 @@ void Player::drawCube(cubeStruct cube) {
 	line.y_max = cube.y_max;
 	line.z_max = cube.z_min;
 
-	this->drawLine(line, false);
+	this->drawLine(line, false, viewer);
 
 	// 1,1,0 -> 0,1,0
 	line.x_min = cube.x_max;
@@ -268,7 +273,7 @@ void Player::drawCube(cubeStruct cube) {
 	line.y_max = cube.y_max;
 	line.z_max = cube.z_min;
 
-	this->drawLine(line, false);
+	this->drawLine(line, false, viewer);
 
 	// 1,0,0 -> 1,0,1
 	line.x_min = cube.x_max;
@@ -279,7 +284,7 @@ void Player::drawCube(cubeStruct cube) {
 	line.y_max = cube.y_min;
 	line.z_max = cube.z_max;
 
-	this->drawLine(line, false);
+	this->drawLine(line, false, viewer);
 
 	// 1,0,1 -> 1,1,1
 	line.x_min = cube.x_max;
@@ -290,7 +295,7 @@ void Player::drawCube(cubeStruct cube) {
 	line.y_max = cube.y_max;
 	line.z_max = cube.z_max;
 
-	this->drawLine(line, false);
+	this->drawLine(line, false, viewer);
 
 	// 1,0,1 -> 0,0,1
 	line.x_min = cube.x_max;
@@ -301,7 +306,7 @@ void Player::drawCube(cubeStruct cube) {
 	line.y_max = cube.y_min;
 	line.z_max = cube.z_max;
 
-	this->drawLine(line, false);
+	this->drawLine(line, false, viewer);
 
 	// 0,0,1 -> 0,1,1
 	line.x_min = cube.x_min;
@@ -312,7 +317,7 @@ void Player::drawCube(cubeStruct cube) {
 	line.y_max = cube.y_max;
 	line.z_max = cube.z_max;
 
-	this->drawLine(line, false);
+	this->drawLine(line, false, viewer);
 
 	// 1,1,1 -> 0,1,1
 	line.x_min = cube.x_max;
@@ -323,7 +328,7 @@ void Player::drawCube(cubeStruct cube) {
 	line.y_max = cube.y_max;
 	line.z_max = cube.z_max;
 
-	this->drawLine(line, false);
+	this->drawLine(line, false, viewer);
 
 	// 1,1,0 -> 1,1,1
 	line.x_min = cube.x_max;
@@ -334,7 +339,7 @@ void Player::drawCube(cubeStruct cube) {
 	line.y_max = cube.y_max;
 	line.z_max = cube.z_max;
 
-	this->drawLine(line, false);
+	this->drawLine(line, false, viewer);
 
 	// 0,1,0 -> 0,1,1
 	line.x_min = cube.x_min;
@@ -345,5 +350,5 @@ void Player::drawCube(cubeStruct cube) {
 	line.y_max = cube.y_max;
 	line.z_max = cube.z_max;
 
-	this->drawLine(line, false);
+	this->drawLine(line, false, viewer);
 }

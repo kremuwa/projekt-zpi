@@ -26,12 +26,12 @@ class Player {
 	boost::thread thread;
 	bool pause_toggle;
 public:
-	VisualiserT *viewer;
+	//VisualiserT *viewer;
 	int current_frame;
 	int total_frames;
 	Reader *reader;
 
-	Player(VisualiserT *_viewer);
+	Player();
 	~Player();
 	bool getDebug(){ return this->debug; };
 	bool getPause(){ return this->pause_toggle; };
@@ -44,8 +44,8 @@ public:
 	void play();
 	void pause();
 	void stop();
-	void drawLine(cubeStruct cube, bool showName);
-	void drawCube(cubeStruct cube);
+	void drawLine(cubeStruct cube, bool showName, VisualiserT *viewer);
+	void drawCube(cubeStruct cube, VisualiserT *viewer);
 
 	std::string randomString(size_t len);
 };
