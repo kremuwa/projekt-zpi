@@ -17,6 +17,7 @@
 #include <utility>
 #include <iostream>
 
+
 typedef pcl::PointXYZRGBA PointT;
 typedef pcl::PointCloud<PointT> PointCloudT;
 typedef pcl::people::PersonCluster<PointT> PeopleClusterT;
@@ -32,24 +33,39 @@ typedef struct {
 	double z_max;
 } cubeStruct;
 
-class Reader {
-public:
-	Reader();
-	~Reader();
+typedef struct {
+	PointCloudT* cloud;
+	int frame_time;
+	std::vector<cubeStruct> people;
+} frameStruct;
 
+
+
+
+// -----------------------------------------------
+
+
+
+class Reader {
 	int current_frame;
 	int total_frames;
 
+public:
+	Reader();
+	~Reader();
 	void startReading(std::string file);
-	std::pair < PointCloudT, std::pair<int, std::vector<PeopleClusterT>>> read();
+	void stopReading();
+	frameStruct read();
 	void jumpTo(int frame);
 	int getCurFrame();
 	int getTotalFrames();
-	void stopReading();
 };
 
 
 class Player {
+	static const bool debug = true;
+	boost::mutex mutex;
+	bool pause_toggle;
 public:
 	VisualiserT *viewer;
 	int current_frame;
@@ -67,7 +83,7 @@ public:
 	void play();
 	void pause();
 	void stop();
-	void drawLine(cubeStruct cube);
+	void drawLine(cubeStruct cube, bool showName);
 	void drawCube(cubeStruct cube);
 
 	std::string randomString(size_t len);
