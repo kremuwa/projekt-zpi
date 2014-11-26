@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QFileDialog>
+#include <QFileSystemModel>
 #include "ui_mainwindow.h"
 #include "Algorithm.h"
 #include "Player.h"
@@ -24,14 +25,19 @@ public slots:
 	void startRecording();
 	void stopRecording();
 
-	void openAndPlayTrajectory();
+	void playTrajectory();
 	void pauseTrajectory();
 	void stopTrajectory();
 	void jumpToTrajectory(int frame);
 
+	void listDirectory(QModelIndex index);
+
 private:
 	Ui::MainWindow ui;
 	Algorithm algorithm;
+
+	QFileSystemModel *dirmodel;
+	QFileSystemModel *filemodel;
 
 	Player myPlayer;
 };

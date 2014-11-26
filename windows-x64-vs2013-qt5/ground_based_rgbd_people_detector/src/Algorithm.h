@@ -89,11 +89,6 @@ public:
 	void startRecording(std::string PCDfilepath, std::string TRJfilepath);
 	void stopRecording();
 
-	void playTrajectory();
-	void pauseTrajectory();
-	void stopTrajectory();
-	void jumpToTrajectory(int offset);
-
 	void setMinConf(float a);
 	void setMinHeight(float a);
 	void setMaxHeight(float a);

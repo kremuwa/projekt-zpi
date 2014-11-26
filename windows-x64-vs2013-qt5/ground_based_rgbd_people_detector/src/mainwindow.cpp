@@ -8,6 +8,28 @@ MainWindow::MainWindow()
 {
 	algorithm.start();
 	ui.setupUi(this);
+
+	QString root = "";
+	dirmodel = new QFileSystemModel(this);
+	dirmodel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
+
+	ui.treeView->setModel(dirmodel);
+
+	dirmodel->setRootPath(QDir::currentPath());
+
+	filemodel = new QFileSystemModel(this); 
+	filemodel->setFilter(QDir::NoDotAndDotDot | QDir::Files);
+
+	QStringList filters;
+	filters << "*.trj";
+
+	filemodel->setNameFilters(filters);
+	filemodel->setNameFilterDisables(false);
+
+	filemodel->setRootPath(QDir::currentPath());
+
+	ui.listView->setModel(filemodel);
+
 }
 
 MainWindow::~MainWindow()
@@ -22,10 +44,13 @@ void MainWindow::playFromKinect() {
 }
 
 void MainWindow::playFromFile() {
-
+	
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open *.oni file"), QString(), tr("ONI Files (*.oni)"));
-
-	algorithm.playFromFile(fileName.toStdString());
+	
+	if (!fileName.isEmpty())
+	{
+		algorithm.playFromFile(fileName.toStdString());
+	}
 
 }
 
@@ -51,9 +76,12 @@ void MainWindow::startRecording() {
 
 	QString dir = QFileDialog::getExistingDirectory(this, tr("Choose Directory to save Your trajectory"), QString(), QFileDialog::ShowDirsOnly);
 
-	QDir().mkdir(dir + tr("pcd"));
+	if (!dir.isEmpty())
+	{
+		QDir().mkdir(dir + tr("pcd"));
 
-	algorithm.startRecording((dir + tr("pcd")).toStdString(), dir.toStdString());
+		algorithm.startRecording((dir + tr("pcd")).toStdString(), dir.toStdString());
+	}
 
 }
 
@@ -63,14 +91,17 @@ void MainWindow::stopRecording() {
 
 }
 
-void MainWindow::openAndPlayTrajectory()
+void MainWindow::playTrajectory()
 {
 
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open *.trj file"), QString(), tr("ONI Files (*.trj)"));
+	
+	if (!fileName.isEmpty())
+	{
+		myPlayer.initialize(fileName.toStdString());
 
-	myPlayer.initialize(fileName.toStdString());
-
-	myPlayer.play();
+		myPlayer.play();
+	}
 
 }
 
@@ -94,5 +125,13 @@ void MainWindow::jumpToTrajectory(int frame)
 {
 
 	myPlayer.jumpTo(frame);
+
+}
+
+void MainWindow::listDirectory(QModelIndex index)
+{
+
+	QString path = dirmodel->fileInfo(index).absoluteFilePath();
+	ui.listView->setRootIndex(filemodel->setRootPath(path));
 
 }

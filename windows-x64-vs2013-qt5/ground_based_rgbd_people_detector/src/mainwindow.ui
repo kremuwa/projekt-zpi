@@ -331,6 +331,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>treeView</sender>
+   <signal>clicked(QModelIndex)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>listDirectory(QModelIndex)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>188</x>
+     <y>395</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>369</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>playFromKinect()</slot>
@@ -344,5 +360,6 @@
   <slot>pauseTrajectory()</slot>
   <slot>stopTrajectory()</slot>
   <slot>jumpToTrajectory(int)</slot>
+  <slot>listDirectory(QModelIndex)</slot>
  </slots>
 </ui>

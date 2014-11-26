@@ -194,6 +194,7 @@ public:
         QObject::connect(pushButtonStopTrajectory, SIGNAL(clicked()), MainWindow, SLOT(stopTrajectory()));
         QObject::connect(horizontalSliderJumpToTrajectory, SIGNAL(valueChanged(int)), MainWindow, SLOT(jumpToTrajectory(int)));
         QObject::connect(pushButtonPlayTrajectory, SIGNAL(clicked()), MainWindow, SLOT(playTrajectory()));
+        QObject::connect(treeView, SIGNAL(clicked(QModelIndex)), MainWindow, SLOT(listDirectory(QModelIndex)));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi

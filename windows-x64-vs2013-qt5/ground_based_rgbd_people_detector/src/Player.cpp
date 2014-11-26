@@ -188,12 +188,6 @@ void play_thread(Player *player){
 	viewer.spin();
 }
 
-
-
-
-
-
-
 void Player::drawLine(cubeStruct cube, bool showName, VisualiserT *viewer) {
 	PointT p1, p2;
 

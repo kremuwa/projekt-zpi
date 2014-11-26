@@ -155,6 +155,11 @@ void Algorithm::run()
 					// remove previously chosen points
 
 					clicked_points_3d->points.clear();
+
+					// add information
+
+					viewer->addText("Choose three points from the floor by clicking on them while holding SHIFT key.", 20, 70, 15, 1, 1, 1);
+					viewer->addText("When You're done, press Q on Your keyboard.", 20, 40, 15, 1, 1, 1);
 					
 					// Spin until 'Q' is pressed:
 
@@ -262,28 +267,21 @@ void Algorithm::run()
 
 							viewer->addText3D(tekst, pp, 0.08); // display text
 							k++;
-
-							qDebug() << "mark 10";
 						}
 					}
 
 					if (k == 0)
 					{
 						empty_in_row++;
-						cout << "Rmpty in a row: " << empty_in_row;
 					}
 					else empty_in_row = 0;
 
 					if (empty_in_row == 3) {
-						cout << "Czyszcze wektor przechowujacy dane o postaciach";
 						centroids_prev.clear();
 					}
 
 					if (k > 0)centroids_prev = centroids_curr;
 
-					cout << " liczba elementow wektora w miejscu b: " << centroids_curr.size() << endl;
-					std::cout << k << " people found" << std::endl;
-				
 					if (isRecordingJustEnabled)
 					{
 
@@ -389,26 +387,6 @@ void Algorithm::stopRecording()
 {
 
 	isRecordingEnabled = false;
-
-}
-
-void Algorithm::playTrajectory()
-{
-
-}
-
-void Algorithm::pauseTrajectory()
-{
-
-}
-
-void Algorithm::stopTrajectory()
-{
-
-}
-
-void Algorithm::jumpToTrajectory(int offset)
-{
 
 }
 
