@@ -1,10 +1,20 @@
 #pragma once
 
+#include <pcl/point_types.h>
+#include <pcl/console/parse.h>
+#include <pcl/common/time.h>
+#include <pcl/visualization/pcl_visualizer.h> 
+#include <pcl/io/openni_grabber.h>
+#include <pcl/sample_consensus/sac_model_plane.h>
+#include <pcl/people/ground_based_people_detection_app.h>
+#include <pcl/people/person_cluster.h>
+
+#include <vector>
 #include <string>
 #include <utility>
-#include <pcl/point_types.h>
-#include <pcl/visualization/pcl_visualizer.h> 
-#include <pcl/people/person_cluster.h>
+#include <iostream>
+#include <sstream>
+#include <fstream>
 
 typedef pcl::PointXYZRGBA PointT;
 typedef pcl::PointCloud<PointT> PointCloudT;

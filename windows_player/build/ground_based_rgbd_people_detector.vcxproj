@@ -279,6 +279,7 @@
 	<ClCompile Include="..\src\reader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\base.h" />
     <ClInclude Include="..\src\Player.h" />
 	<ClInclude Include="..\src\structs.h" />
     <ClInclude Include="resource.h" />

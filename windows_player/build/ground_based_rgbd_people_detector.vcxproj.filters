@@ -26,6 +26,7 @@
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="..\src\Player.h" />
+    <ClInclude Include="..\src\base.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ground_based_rgbd_people_detector.rc" />
