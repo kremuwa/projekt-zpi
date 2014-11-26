@@ -4,20 +4,15 @@ enum { COLS = 640, ROWS = 480 };
 
 int main (int argc, char** argv) {
 
-  VisualiserT viewer("PCL Viewer");
+  VisualiserT viewer("Wykrywanie smiesznych ludzi w srodowisku domowym");
   viewer.addText("copyright tra ta ta.", 40, 5);
 
   Player play(&viewer);
 
-  PointT punkt;
-  punkt.x = 1;
-  punkt.y = 1;
-  punkt.z = -2;
-
   //play.pause();
   //play.pause();
 
-  boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
+  boost::this_thread::sleep(boost::posix_time::milliseconds(3000));
 
   play.play();
 
