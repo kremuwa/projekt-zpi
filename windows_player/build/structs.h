@@ -4,6 +4,7 @@
 #include <utility>
 #include <pcl/point_types.h>
 #include <pcl/visualization/pcl_visualizer.h> 
+#include <pcl/people/person_cluster.h>
 
 typedef pcl::PointXYZRGBA PointT;
 typedef pcl::PointCloud<PointT> PointCloudT;
