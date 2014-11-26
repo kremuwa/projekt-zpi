@@ -151,8 +151,9 @@ void Player::play(){
 			frame = this->reader->read();
 
 			//PointCloudT::Ptr cloud;
-			
-			PointCloudT::Ptr cloud(new PointCloudT);
+			//PointCloudT::Ptr cloud(new PointCloudT);
+
+			boost::shared_ptr<PointCloudT> cloud = boost::make_shared<PointCloudT>(*frame.cloud);
 			//cloud = frame.cloud;
 
 			this->viewer->removeAllPointClouds();
@@ -160,7 +161,7 @@ void Player::play(){
 
 			pcl::visualization::PointCloudColorHandlerRGBField<PointT> rgb(cloud);
 			this->viewer->addPointCloud<PointT>(cloud, rgb, "input_cloud");
-			this->viewer->setCameraPosition(-3, 0, -2, 0, -1, 0, 0);
+			this->viewer->setCameraPosition(-4, -1, -3, 0, -1, 0, 0);
 
 			for (unsigned short int i = 0; i < frame.people.size(); i++){
 				this->drawCube(frame.people.at(i));
@@ -201,7 +202,7 @@ void Player::drawLine(cubeStruct cube, bool showName) {
 	this->viewer->addLine(p1, p2, (double)0, (double)255, (double)0, (const std::string)this->randomString(6));
 
 	if (showName){
-		this->viewer->addText3D((const std::string)cube.name, p1, 0.14, 1.0, 1.0, 1.0, (const std::string)this->randomString(6));
+		this->viewer->addText3D((const std::string)cube.name, p1, 0.1, 1.0, 1.0, 1.0, (const std::string)this->randomString(6));
 	}
 }
 
