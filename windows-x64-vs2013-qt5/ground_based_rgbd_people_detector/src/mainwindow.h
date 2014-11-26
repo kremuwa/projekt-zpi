@@ -25,7 +25,6 @@ public slots:
 
 private:
 	Ui::MainWindow ui;
-	pcl::visualization::PCLVisualizer viewer;
 	Algorithm algorithm;
 };
 
