@@ -1,11 +1,4 @@
 #include "writer.h"
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <windows.h>
-#include <time.h>
-#include <pcl/io/pcd_io.h>
-#include <pcl/point_types.h>
 
 using namespace std;
 
@@ -16,12 +9,12 @@ void writer::startWriting(string& pcd_path, string& trjPath) {
 
 	if (dirExists(pcd_path)) {
 		int fileNum = 0;
-
-		while (fileExists(createFilePath(trjPath, createFileName(fileNum))) == true) {
+		string trjExt = "trj";
+		while (fileExists(createFilePath(trjPath, createFileName(fileNum), trjExt)) == true) {
 			fileNum++;
 		}
 
-		trjFile.open(createFilePath(trjPath, createFileName(fileNum)));
+		trjFile.open(createFilePath(trjPath, createFileName(fileNum), trjExt));
 		if (trjFile.is_open()) {
 			trjFile << pcdPath << endl;
 		}
@@ -31,17 +24,38 @@ void writer::startWriting(string& pcd_path, string& trjPath) {
 		}
 	}
 }
-void writer::write(pcl::PointCloud<pcl::PointXYZRGBA> pointCloud, vector <pcl::people::PersonCluster<pcl::PointXYZRGBA > > bboxes) {
-	string path = createFilePath(pcdPath, to_string(curFrame));
+
+void writer::write(PointCloudT pointCloud, vector < pair<string, PeopleClusterT > > bboxes) {
+	string pcdExt = "pcd";
+	string path = createFilePath(pcdPath, to_string(curFrame), pcdExt);
 	pcl::io::savePCDFileASCII(path, pointCloud);
 	
-	pair<double, vector<pcl::people::PersonCluster<pcl::PointXYZRGBA> > > bboxPair;
-	double time = diffclock(clock(), startTime);
-	bboxPair = make_pair(time, bboxes);
+	int time = diffclock(clock(), startTime);
+	trjFile << time << "\t";
 
-	// #1 jakieœ tam zapisywanie czasu oraz bboxow do plików 
+	for (int i = 0; i < bboxes.size(); i++) {
+		pair<string, PeopleClusterT > personPair = bboxes[i];
+		string personName = personPair.first;
+		PeopleClusterT personCluser = personPair.second;
+		cubeStruct pStruct;
+		copyToCubeStruct(&pStruct, personCluser, personName);
+
+		trjFile << personName << " " << pStruct.x_min << " " << pStruct.x_max << " "
+			<< pStruct.y_min << " " << pStruct.y_max << " " << pStruct.z_min << " " << pStruct.z_max << "\t";
+	}
 	
-	curFrame++;
+	trjFile << endl;
+	curFrame++; 
+}
+
+void writer::copyToCubeStruct(cubeStruct* pStruct, pcl::people::PersonCluster < PointT> pCluser, string pname) {
+	(*pStruct).name = pname;
+	(*pStruct).x_min = pCluser.getMin()(0);
+	(*pStruct).y_min = pCluser.getMin()(1);
+	(*pStruct).z_min = pCluser.getMin()(2);
+	(*pStruct).x_max = pCluser.getMax()(0);
+	(*pStruct).y_max = pCluser.getMax()(1);
+	(*pStruct).z_max = pCluser.getMax()(2);
 }
 
 string writer::createFileName(int i) {
@@ -52,11 +66,11 @@ string writer::createFileName(int i) {
 	return ossMessage.str();
 }
 
-string writer::createFilePath(string& directoryPath, string& fileName) {
+string writer::createFilePath(string& directoryPath, string& fileName, string& ext) {
 	if (directoryPath.back() != '\\') {
-		return directoryPath + "\\" + fileName;
+		return directoryPath + "\\" + fileName + "." + ext;
 	}
-	return directoryPath + fileName;
+	return directoryPath + fileName + "." + ext;
 }
 
 void writer::stopWriting() {

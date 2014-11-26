@@ -67,15 +67,17 @@ frameStruct Reader::read() {
 	frameStruct result;
 	if (curFrame <= totalFrames)
 	{
-		string pcdExt = "pdc";
+		string pcdExt = "pcd";
 		string path = createFilePath(pcdPath, to_string(curFrame), pcdExt);
-		PointCloudT::Ptr cloud(new PointCloudT);
+		PointCloudT::Ptr cloud(new PointCloudT());
+		//PointCloudT::Ptr cloud(new PointCloudT);
+		//PointCloudT *cloud;
 		if (pcl::io::loadPCDFile<PointT>(path, *cloud) == -1)
 		{
 			cout << "Wyst¹pi³ b³¹d podczas wczytywania pliku: " << path;
 		}
 		
-		result.cloud = cloud.get();
+		result.cloud = cloud;
 		result.frame_time = bboxes[curFrame].first;
 		result.people = bboxes[curFrame].second;
 		curFrame++;

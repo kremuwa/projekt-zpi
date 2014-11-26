@@ -144,24 +144,43 @@ void play_thread(Player *player){
 	int totalFrames = player->getTotalFrames();
 	int lastFrameTime = 0;
 	frameStruct frame;
+	string fileName;
 
 	VisualiserT viewer("PCL test");
 
 	while (currentFrame < totalFrames) {
 		if (player->getDebug()){ std::cout << "PLAY iteruje sie po klatkce " << currentFrame << std::endl; }
-		if (player->mutex.try_lock() && !player->getPause()) {
+		if (/*player->mutex.try_lock() && */!player->getPause()) {
 			viewer.addText("copyright by MU/GW/GK/KG/MP/JP", 50, 8);
 
 			if (player->getDebug()){ std::cout << "PLAY rysuje" << std::endl; }
 			frame = player->reader->read();
 
-			boost::shared_ptr<PointCloudT> cloud = boost::make_shared<PointCloudT>(*frame.cloud);
+			//boost::shared_ptr<PointCloudT> cloud = boost::make_shared<PointCloudT>(*frame.cloud);
+			PointCloudT::Ptr cloud(new PointCloudT());
+
+			//cloud = frame.cloud;
+
+			// DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG 
+			// DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG 
+			// DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
+
+			// normalnie to reader robi.
+			if (currentFrame == 1){fileName = "C:\\TEMP\\3.pcd";}
+			else{fileName = "C:\\TEMP\\2.pcd";}
+			if (pcl::io::loadPCDFile<PointT>(fileName, *cloud) == -1){std::cout << "Wyst¹pi³ b³¹d podczas wczytywania pliku: " << "C:\\TEMP\\3.pcd" << std::endl;}
+			// END DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
+			// END DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
+			// END DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
+
+
+			
 			viewer.removeAllPointClouds();
 			viewer.removeAllShapes();
 
 			pcl::visualization::PointCloudColorHandlerRGBField<PointT> rgb(cloud);
 			viewer.addPointCloud<PointT>(cloud, rgb, "input_cloud");
-			viewer.setCameraPosition(-4, -1, -3, 0, -1, 0, 0);
+			viewer.setCameraPosition(-2, -1, -3, 0, 1, 0, 0);
 
 			for (unsigned short int i = 0; i < frame.people.size(); i++){
 				player->drawCube(frame.people.at(i), &viewer);
@@ -171,13 +190,13 @@ void play_thread(Player *player){
 
 			//w wersji zlaczonej z Grzeskiem K.
 			//boost::this_thread::sleep(boost::posix_time::milliseconds(frame.frame_time - lastFrameTime));
-			boost::this_thread::sleep(boost::posix_time::milliseconds(2000));
+			boost::this_thread::sleep(boost::posix_time::milliseconds(5000));
 
 			lastFrameTime = frame.frame_time;
 
 			currentFrame = player->getCurFrame();
 
-			player->mutex.unlock();
+			//player->mutex.unlock();
 		}
 		else {
 			if (player->getDebug()){ std::cout << "PLAY czeka na koniec pauzy lub mutex " << std::endl; }

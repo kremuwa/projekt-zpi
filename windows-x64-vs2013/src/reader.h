@@ -1,33 +1,30 @@
 #ifndef READER_H
 #define READER_H
-#include <string>
-#include <fstream>
-#include <pcl/console/parse.h>
-#include <pcl/point_types.h>
-#include <pcl/common/time.h>
-#include <pcl/visualization/pcl_visualizer.h> 
-#include <pcl/io/openni_grabber.h>
-#include <pcl/sample_consensus/sac_model_plane.h>
-#include <pcl/people/ground_based_people_detection_app.h>
+
+#include "base.h"
 
 using namespace std;
 
-class reader {
+class Reader {
+
 	int curFrame;
 	int totalFrames;
 	ifstream trjFile;
 	string pcdPath;
-	vector < pair<double, vector<pcl::people::PersonCluster<pcl::PointXYZRGBA> > > > bboxes;
+	vector < pair<int, vector<cubeStruct> > > bboxes;
 public:
-	reader(int frames);
+	Reader();
+	~Reader();
 	void startReading(string& trjPath);
-	pair < pcl::PointCloud<pcl::PointXYZRGBA>, pair<double, vector <pcl::people::PersonCluster<pcl::PointXYZRGBA > > > > read();
+	frameStruct read();
 	void jumpTo(int frame);
 	int getCurFrame();
 	int getTotalFrames();
 	void stopReading();
 private:
-	string createFilePath(string& directoryPath, string& fileName)
+	string createFilePath(string& directoryPath, string& fileName, string& ext);
+	void parseLine(string line);
+	vector<string> explode(const string& str, const char delimiter);
 };
 
 #endif READER_H

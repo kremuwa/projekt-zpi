@@ -35,9 +35,7 @@ typedef struct {
 } cubeStruct;
 
 typedef struct {
-	//PointCloudT* cloud;
-	boost::shared_ptr<PointCloudT> cloud;
-	//PointCloudT::Ptr cloud;
+	PointCloudT* cloud;
 	int frame_time;
 	std::vector<cubeStruct> people;
 } frameStruct;

@@ -1,78 +1,109 @@
 #include "reader.h"
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <windows.h>
-#include <time.h>
-#include <pcl/io/pcd_io.h>
-#include <pcl/point_types.h>
 
 using namespace std;
 
-reader::reader(int frames) {
-	totalFrames = frames;
-	curFrame = 1;
-}
+Reader::Reader() {}
+Reader::~Reader() {}
 
-void reader::startReading(string& trjPath) {
-	trjFile.open(trjPath);
-	if (trjFile.is_open() == true)
-	{
-		getline(trjFile, pcdPath);
+void Reader::startReading(string& trjPath) {
+	try {
+		trjFile.open(trjPath);
 
-		// #2 zaczytuje infor o bboxach z wszystkich klatek i zapisuje do vectora bboxes
+		if (trjFile.is_open() == true) {
+			getline(trjFile, pcdPath);
+			
+			string line;
+			while (getline(trjFile, line)) {
+				this->parseLine(line);
+			}
 		
-
-		totalFrames = bboxes.size();
-		curFrame = 1;
+			totalFrames = this->bboxes.size();
+			curFrame = 1;
+		}
+		else {
+			cout << "Nie znaleziono pliku .trj" << endl;
+			this->totalFrames = -1;
+		}
 	}
-	else {
-		cout << "Nie znaleziono pliku .trj" << endl;
-		totalFrames = -1;
+	catch (...){
+		throw;
 	}
 }
 
-pair < pcl::PointCloud<pcl::PointXYZRGBA>, pair<double, vector <pcl::people::PersonCluster<pcl::PointXYZRGBA > > > > reader::read() {
-	pair < pcl::PointCloud<pcl::PointXYZRGBA>, pair<double, vector <pcl::people::PersonCluster<pcl::PointXYZRGBA > > > > result;
+void Reader::parseLine(string line) {
+	vector<cubeStruct> resultCubes;
+	vector<string> cubes = explode(line, '\t');
+	istringstream iss(cubes[0]);
+	int time;
+	iss >> time;
+	for (int i = 1; i < cubes.size(); i++) {
+		vector<string> coords = explode(cubes[i], ' ');
+		cubeStruct cube;
+		cube.name = coords[0];
+		cube.x_min = atof(coords[1].c_str());
+		cube.x_max = atof(coords[2].c_str());
+		cube.y_min = atof(coords[3].c_str());
+		cube.y_max = atof(coords[4].c_str());
+		cube.z_min = atof(coords[5].c_str());
+		cube.z_max = atof(coords[6].c_str());
+
+		resultCubes.push_back(cube);
+	}
+	bboxes.push_back(make_pair(time, resultCubes));
+}
+
+vector<string> Reader::explode(const string& str, const char delimiter)
+{
+	vector<string> elements;
+	stringstream stream(str);
+	string item;
+	while (getline(stream, item, delimiter))
+		elements.push_back(item);
+
+	return elements;
+}
+
+frameStruct Reader::read() {
+	frameStruct result;
 	if (curFrame <= totalFrames)
 	{
-		string path = createFilePath(pcdPath, to_string(curFrame));
-		pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-		pair<double, vector<pcl::people::PersonCluster<pcl::PointXYZRGBA> > > bbox;
-
-		if (pcl::io::loadPCDFile<pcl::PointXYZ>(path, *cloud) == -1) 
+		string pcdExt = "pdc";
+		string path = createFilePath(pcdPath, to_string(curFrame), pcdExt);
+		PointCloudT::Ptr cloud(new PointCloudT);
+		if (pcl::io::loadPCDFile<PointT>(path, *cloud) == -1)
 		{
 			cout << "Wyst¹pi³ b³¹d podczas wczytywania pliku: " << path;
 		}
-		bbox = bboxes[curFrame];
-			
-		result = make_pair(cloud, bbox);
+		
+		result.cloud = cloud.get();
+		result.frame_time = bboxes[curFrame].first;
+		result.people = bboxes[curFrame].second;
 		curFrame++;
 	}
-	
 	return result;
 }
 
-int reader::getTotalFrames() {
+
+int Reader::getTotalFrames() {
 	return totalFrames;
 }
 
-int reader::getCurFrame() {
+int Reader::getCurFrame() {
 	return curFrame;
 }
 
-void reader::jumpTo(int frame) {
+void Reader::jumpTo(int frame) {
 	curFrame = frame;
 }
 
-void reader::stopReading() {
-	trjFile.close;
+void Reader::stopReading() {
+	trjFile.close();
 	bboxes.clear();
 }
 
-string reader::createFilePath(string& directoryPath, string& fileName) {
+string Reader::createFilePath(string& directoryPath, string& fileName, string& ext) {
 	if (directoryPath.back() != '\\') {
-		return directoryPath + "\\" + fileName;
+		return directoryPath + "\\" + fileName + "." + ext;
 	}
-	return directoryPath + fileName;
+	return directoryPath + fileName + "." + ext;
 }

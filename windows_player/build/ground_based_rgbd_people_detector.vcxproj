@@ -288,6 +288,9 @@
   <ItemGroup>
     <ResourceCompile Include="ground_based_rgbd_people_detector.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="reader.mockup.trajectory" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

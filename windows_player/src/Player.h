@@ -23,7 +23,6 @@ public:
 
 class Player {
 	bool debug;
-	
 	boost::thread thread;
 	bool pause_toggle;
 public:
