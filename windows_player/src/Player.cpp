@@ -2,6 +2,9 @@
 
 // debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only!
 // debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only!
+/*
+	Mockup klasy Readera.
+
 Reader::Reader(){
 	this->current_frame = 0;
 	this->total_frames = 2;
@@ -63,13 +66,12 @@ frameStruct Reader::read() {
 	klatka.people = wektorLudzi;
 
 	return klatka;
-}
+}*/
 // debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only!
 // debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only!
 
 
 Player::Player() {
-	//this->viewer = _viewer;
 	this->reader = new Reader();
 	this->mutex.initialize();
 	this->pause_toggle = false;
@@ -77,7 +79,6 @@ Player::Player() {
 }
 
 Player::~Player(){
-	//this->viewer = NULL;
 	this->reader = NULL;
 }
 
@@ -132,10 +133,9 @@ void Player::stop(){
 
 void Player::play(){
 	this->thread=boost::thread (&play_thread, this);
-	// stop dziala, chociaz tyle.
-	//boost::this_thread::sleep(boost::posix_time::milliseconds(1500));
+	boost::this_thread::sleep(boost::posix_time::milliseconds(15000));
 	//this->stop();
-	thread.join();
+	//thread.join();
 }
 
 
@@ -148,21 +148,16 @@ void play_thread(Player *player){
 	frameStruct frame;
 
 	VisualiserT viewer("PCL test");
-	viewer.addText("copyright GW.", 50, 8);
 
 	while (currentFrame < totalFrames) {
 		if (player->getDebug()){ std::cout << "PLAY iteruje sie po klatkce " << currentFrame << std::endl; }
-		if (!player->getPause()) {
-			//if (this->mutex.try_lock() &&!this->pause_toggle)  
-			if (player->getDebug()){ std::cout << "PLAY yo. rysuje " << std::endl; }
+		if (player->mutex.try_lock() && !player->getPause()) {
+			viewer.addText("copyright by MU/GW/GK/KG/MP/JP", 50, 8);
+
+			if (player->getDebug()){ std::cout << "PLAY rysuje" << std::endl; }
 			frame = player->reader->read();
 
-			//PointCloudT::Ptr cloud;
-			//PointCloudT::Ptr cloud(new PointCloudT);
-
 			boost::shared_ptr<PointCloudT> cloud = boost::make_shared<PointCloudT>(*frame.cloud);
-			//cloud = frame.cloud;
-
 			viewer.removeAllPointClouds();
 			viewer.removeAllShapes();
 
@@ -174,17 +169,20 @@ void play_thread(Player *player){
 				player->drawCube(frame.people.at(i), &viewer);
 			}
 
-			//w wersji zlaczonej z Grzeskiem K.  boost::this_thread::sleep(boost::posix_time::milliseconds(frame.frame_time - lastFrameTime));
+			viewer.spinOnce();
+
+			//w wersji zlaczonej z Grzeskiem K.
+			//boost::this_thread::sleep(boost::posix_time::milliseconds(frame.frame_time - lastFrameTime));
 			boost::this_thread::sleep(boost::posix_time::milliseconds(2000));
 
 			lastFrameTime = frame.frame_time;
 
 			currentFrame = player->getCurFrame();
 
-			//this->mutex.unlock();
+			player->mutex.unlock();
 		}
 		else {
-			if (player->getDebug()){ std::cout << "PLAY yo. czekam " << std::endl; }
+			if (player->getDebug()){ std::cout << "PLAY czeka na koniec pauzy lub mutex " << std::endl; }
 			boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
 		}
 	}

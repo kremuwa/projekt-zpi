@@ -22,7 +22,7 @@ public:
 
 class Player {
 	bool debug;
-	boost::mutex mutex;
+	
 	boost::thread thread;
 	bool pause_toggle;
 public:
@@ -30,6 +30,7 @@ public:
 	int current_frame;
 	int total_frames;
 	Reader *reader;
+	boost::mutex mutex;
 
 	Player();
 	~Player();
