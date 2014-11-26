@@ -7,6 +7,8 @@
 
 typedef pcl::PointXYZRGBA PointT;
 typedef pcl::PointCloud<PointT> PointCloudT;
+typedef pcl::people::PersonCluster<PointT> PeopleClusterT;
+typedef pcl::visualization::PCLVisualizer VisualiserT;
 
 typedef struct {
 	std::string name;
