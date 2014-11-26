@@ -40,7 +40,7 @@ void Reader::parseLine(string line) {
 		cube.y_min = atof(coords[3].c_str());
 		cube.y_max = atof(coords[4].c_str());
 		cube.z_min = atof(coords[5].c_str());
-		cube.x_max = atof(coords[6].c_str());
+		cube.z_max = atof(coords[6].c_str());
 		resultCubes.push_back(cube);
 	}
 	bboxes.push_back(make_pair(time, resultCubes));
