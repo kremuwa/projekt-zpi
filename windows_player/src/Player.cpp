@@ -73,6 +73,7 @@ Player::Player(VisualiserT *_viewer) {
 	this->reader = new Reader();
 	this->mutex.initialize();
 	this->pause_toggle = false;
+	this->debug = true;
 }
 
 Player::~Player(){
@@ -130,25 +131,28 @@ void Player::stop(){
 	this->pause_toggle = false;
 }
 
-
-
-
-
-
 void Player::play(){
-	if (this->debug){ std::cout << "PLAY!!! " << std::endl;}
+	this->thread=boost::thread (&play_thread, this);
+	//boost::this_thread::sleep(boost::posix_time::milliseconds(2500));
+	//this->debug = false;
+	thread.join();
+}
 
-	int currentFrame = this->getCurFrame();
-	int totalFrames = this->getTotalFrames();
+
+void play_thread(Player *player){
+	if (player->getDebug()){ std::cout << "PLAY THREAD!!! " << std::endl; }
+
+	int currentFrame = player->getCurFrame();
+	int totalFrames = player->getTotalFrames();
 	int lastFrameTime = 0;
 	frameStruct frame;
 
 	while (currentFrame < totalFrames) {
-		if (this->debug){ std::cout << "PLAY iteruje sie po klatkce " << currentFrame << std::endl; }
-		if (!this->pause_toggle) {
+		if (player->getDebug()){ std::cout << "PLAY iteruje sie po klatkce " << currentFrame << std::endl; }
+		if (!player->getPause()) {
 			//if (this->mutex.try_lock() &&!this->pause_toggle)  
-			if (this->debug){ std::cout << "PLAY yo. rysuje " << std::endl; }
-			frame = this->reader->read();
+			if (player->getDebug()){ std::cout << "PLAY yo. rysuje " << std::endl; }
+			frame = player->reader->read();
 
 			//PointCloudT::Ptr cloud;
 			//PointCloudT::Ptr cloud(new PointCloudT);
@@ -156,15 +160,15 @@ void Player::play(){
 			boost::shared_ptr<PointCloudT> cloud = boost::make_shared<PointCloudT>(*frame.cloud);
 			//cloud = frame.cloud;
 
-			this->viewer->removeAllPointClouds();
-			this->viewer->removeAllShapes();
+			player->viewer->removeAllPointClouds();
+			player->viewer->removeAllShapes();
 
 			pcl::visualization::PointCloudColorHandlerRGBField<PointT> rgb(cloud);
-			this->viewer->addPointCloud<PointT>(cloud, rgb, "input_cloud");
-			this->viewer->setCameraPosition(-4, -1, -3, 0, -1, 0, 0);
+			player->viewer->addPointCloud<PointT>(cloud, rgb, "input_cloud");
+			player->viewer->setCameraPosition(-4, -1, -3, 0, -1, 0, 0);
 
 			for (unsigned short int i = 0; i < frame.people.size(); i++){
-				this->drawCube(frame.people.at(i));
+				player->drawCube(frame.people.at(i));
 			}
 			
 			//w wersji zlaczonej z Grzeskiem K.  boost::this_thread::sleep(boost::posix_time::milliseconds(frame.frame_time - lastFrameTime));
@@ -172,12 +176,12 @@ void Player::play(){
 
 			lastFrameTime = frame.frame_time;
 
-			currentFrame = this->getCurFrame();
+			currentFrame = player->getCurFrame();
 
 			//this->mutex.unlock();
 		}
 		else {
-			if (this->debug){ std::cout << "PLAY yo. czekam " << std::endl; }
+			if (player->getDebug()){ std::cout << "PLAY yo. czekam " << std::endl; }
 			boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
 		}
 	}

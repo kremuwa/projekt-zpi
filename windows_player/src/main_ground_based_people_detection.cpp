@@ -4,7 +4,7 @@ enum { COLS = 640, ROWS = 480 };
 
 int main (int argc, char** argv) {
 
-  VisualiserT viewer("Wykrywanie smiesznych ludzi w srodowisku domowym");
+  VisualiserT viewer("test");
   viewer.addText("copyright tra ta ta.", 40, 5);
 
   Player play(&viewer);

@@ -20,10 +20,10 @@ public:
 
 // -----------------------------------------------
 
-
 class Player {
-	static const bool debug = true;
+	bool debug;
 	boost::mutex mutex;
+	boost::thread thread;
 	bool pause_toggle;
 public:
 	VisualiserT *viewer;
@@ -33,6 +33,8 @@ public:
 
 	Player(VisualiserT *_viewer);
 	~Player();
+	bool getDebug(){ return this->debug; };
+	bool getPause(){ return this->pause_toggle; };
 
 	void initialize(std::string file);
 	void jumpTo(int frame);
@@ -48,3 +50,4 @@ public:
 	std::string randomString(size_t len);
 };
 
+void play_thread(Player *player);
