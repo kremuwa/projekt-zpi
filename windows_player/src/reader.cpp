@@ -6,22 +6,27 @@ Reader::Reader() {}
 Reader::~Reader() {}
 
 void Reader::startReading(string& trjPath) {
-	this->trjFile.open(trjPath);
+	try {
+		trjFile.open(trjPath);
 
-	if (trjFile.is_open() == true) {
-		getline(this->trjFile, this->pcdPath);
+		if (trjFile.is_open() == true) {
+			getline(trjFile, pcdPath);
 
-		string line;
-		while (getline(this->trjFile, line)) {
-			this->parseLine(line);
-		}
+			string line;
+			while (getline(trjFile, line)) {
+				this->parseLine(line);
+			}
 		
-		this->totalFrames = this->bboxes.size();
-		this->curFrame = 1;
+			totalFrames = this->bboxes.size();
+			curFrame = 1;
+		}
+		else {
+			cout << "Nie znaleziono pliku .trj" << endl;
+			this->totalFrames = -1;
+		}
 	}
-	else {
-		cout << "Nie znaleziono pliku .trj" << endl;
-		this->totalFrames = -1;
+	catch (...){
+		throw;
 	}
 }
 

@@ -1,21 +1,13 @@
 #pragma once
 
-#include <pcl/console/parse.h>
-#include <pcl/point_types.h>
-#include <pcl/common/time.h>
-#include <pcl/visualization/pcl_visualizer.h> 
-#include <pcl/io/openni_grabber.h>
-#include <pcl/sample_consensus/sac_model_plane.h>
-#include <pcl/people/ground_based_people_detection_app.h>
+
+#include "base.h"
 
 #include <QThread>
 #include <QDebug>
 #include <QMutex>
 
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <vector>
+
 
 #include "writer.h"
 
