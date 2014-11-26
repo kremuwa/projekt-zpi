@@ -80,7 +80,7 @@ public:
 
 	pcl::visualization::PCLVisualizer *viewer;
 
-	writer recorder;
+	writer myWriter;
 
 	std::string currentTRJdir;
 	std::string currentPCDdir;

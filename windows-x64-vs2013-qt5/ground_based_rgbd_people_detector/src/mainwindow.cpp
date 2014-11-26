@@ -62,3 +62,37 @@ void MainWindow::stopRecording() {
 	algorithm.stopRecording();
 
 }
+
+void MainWindow::openAndPlayTrajectory()
+{
+
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open *.trj file"), QString(), tr("ONI Files (*.trj)"));
+
+	myPlayer.initialize(fileName.toStdString());
+
+	myPlayer.play();
+
+}
+
+void MainWindow::pauseTrajectory()
+{
+
+	// actually it toggles pause
+
+	myPlayer.pause();
+
+}
+
+void MainWindow::stopTrajectory()
+{
+
+	myPlayer.stop();
+
+}
+
+void MainWindow::jumpToTrajectory(int frame)
+{
+
+	myPlayer.jumpTo(frame);
+
+}

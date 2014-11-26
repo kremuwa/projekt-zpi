@@ -337,7 +337,7 @@ pcl::OpenNIGrabber::setupDevice (const std::string& device_id, const Mode& depth
   {
     if (boost::filesystem::exists (device_id))
     {
-      device_ = driver.createVirtualDevice (device_id, true, true);
+      device_ = driver.createVirtualDevice (device_id, false, true);
     }
     else if (driver.getNumberDevices () == 0)
     {

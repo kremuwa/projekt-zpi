@@ -13,12 +13,16 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QColumnView>
-#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QListView>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QSlider>
 #include <QtWidgets/QStatusBar>
-#include <QtWidgets/QToolBar>
+#include <QtWidgets/QTreeView>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -26,71 +30,170 @@ QT_BEGIN_NAMESPACE
 class Ui_MainWindow
 {
 public:
-    QAction *actionPlayFromFile;
-    QAction *actionPlayFromKinect;
-    QAction *actionStopPlaying;
-    QAction *actionStartAlgorithm;
-    QAction *actionStopAlgorithm;
-    QAction *actionStartRecording;
-    QAction *actionStopRecording;
     QWidget *centralwidget;
-    QGridLayout *gridLayout;
-    QColumnView *columnView;
+    QVBoxLayout *verticalLayout;
+    QHBoxLayout *horizontalLayout;
+    QGroupBox *groupBox_2;
+    QVBoxLayout *verticalLayout_2;
+    QPushButton *pushButtonPlayFromKinect;
+    QPushButton *pushButtonPlayFromFile;
+    QPushButton *pushButtonStopPlaying;
+    QGroupBox *groupBox_3;
+    QVBoxLayout *verticalLayout_3;
+    QPushButton *pushButtonStartAlgorithm;
+    QPushButton *pushButtonStopAlgorithm;
+    QGroupBox *groupBox;
+    QVBoxLayout *verticalLayout_4;
+    QPushButton *pushButtonStartRecording;
+    QPushButton *pushButtonStopRecording;
+    QHBoxLayout *horizontalLayout_3;
+    QGroupBox *groupBox_4;
+    QHBoxLayout *horizontalLayout_4;
+    QPushButton *pushButtonPlayTrajectory;
+    QPushButton *pushButtonPauseTrajectory;
+    QPushButton *pushButtonStopTrajectory;
+    QSlider *horizontalSliderJumpToTrajectory;
+    QHBoxLayout *horizontalLayout_2;
+    QTreeView *treeView;
+    QListView *listView;
     QStatusBar *statusbar;
-    QToolBar *toolBar;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(740, 589);
-        actionPlayFromFile = new QAction(MainWindow);
-        actionPlayFromFile->setObjectName(QStringLiteral("actionPlayFromFile"));
-        actionPlayFromKinect = new QAction(MainWindow);
-        actionPlayFromKinect->setObjectName(QStringLiteral("actionPlayFromKinect"));
-        actionStopPlaying = new QAction(MainWindow);
-        actionStopPlaying->setObjectName(QStringLiteral("actionStopPlaying"));
-        actionStartAlgorithm = new QAction(MainWindow);
-        actionStartAlgorithm->setObjectName(QStringLiteral("actionStartAlgorithm"));
-        actionStopAlgorithm = new QAction(MainWindow);
-        actionStopAlgorithm->setObjectName(QStringLiteral("actionStopAlgorithm"));
-        actionStartRecording = new QAction(MainWindow);
-        actionStartRecording->setObjectName(QStringLiteral("actionStartRecording"));
-        actionStopRecording = new QAction(MainWindow);
-        actionStopRecording->setObjectName(QStringLiteral("actionStopRecording"));
+        MainWindow->resize(740, 625);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
-        gridLayout = new QGridLayout(centralwidget);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        columnView = new QColumnView(centralwidget);
-        columnView->setObjectName(QStringLiteral("columnView"));
+        verticalLayout = new QVBoxLayout(centralwidget);
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        groupBox_2 = new QGroupBox(centralwidget);
+        groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
+        verticalLayout_2 = new QVBoxLayout(groupBox_2);
+        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        pushButtonPlayFromKinect = new QPushButton(groupBox_2);
+        pushButtonPlayFromKinect->setObjectName(QStringLiteral("pushButtonPlayFromKinect"));
 
-        gridLayout->addWidget(columnView, 0, 0, 1, 1);
+        verticalLayout_2->addWidget(pushButtonPlayFromKinect);
+
+        pushButtonPlayFromFile = new QPushButton(groupBox_2);
+        pushButtonPlayFromFile->setObjectName(QStringLiteral("pushButtonPlayFromFile"));
+
+        verticalLayout_2->addWidget(pushButtonPlayFromFile);
+
+        pushButtonStopPlaying = new QPushButton(groupBox_2);
+        pushButtonStopPlaying->setObjectName(QStringLiteral("pushButtonStopPlaying"));
+
+        verticalLayout_2->addWidget(pushButtonStopPlaying);
+
+
+        horizontalLayout->addWidget(groupBox_2);
+
+        groupBox_3 = new QGroupBox(centralwidget);
+        groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
+        verticalLayout_3 = new QVBoxLayout(groupBox_3);
+        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
+        pushButtonStartAlgorithm = new QPushButton(groupBox_3);
+        pushButtonStartAlgorithm->setObjectName(QStringLiteral("pushButtonStartAlgorithm"));
+
+        verticalLayout_3->addWidget(pushButtonStartAlgorithm);
+
+        pushButtonStopAlgorithm = new QPushButton(groupBox_3);
+        pushButtonStopAlgorithm->setObjectName(QStringLiteral("pushButtonStopAlgorithm"));
+
+        verticalLayout_3->addWidget(pushButtonStopAlgorithm);
+
+
+        horizontalLayout->addWidget(groupBox_3);
+
+        groupBox = new QGroupBox(centralwidget);
+        groupBox->setObjectName(QStringLiteral("groupBox"));
+        verticalLayout_4 = new QVBoxLayout(groupBox);
+        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
+        pushButtonStartRecording = new QPushButton(groupBox);
+        pushButtonStartRecording->setObjectName(QStringLiteral("pushButtonStartRecording"));
+
+        verticalLayout_4->addWidget(pushButtonStartRecording);
+
+        pushButtonStopRecording = new QPushButton(groupBox);
+        pushButtonStopRecording->setObjectName(QStringLiteral("pushButtonStopRecording"));
+
+        verticalLayout_4->addWidget(pushButtonStopRecording);
+
+
+        horizontalLayout->addWidget(groupBox);
+
+
+        verticalLayout->addLayout(horizontalLayout);
+
+        horizontalLayout_3 = new QHBoxLayout();
+        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
+        groupBox_4 = new QGroupBox(centralwidget);
+        groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
+        horizontalLayout_4 = new QHBoxLayout(groupBox_4);
+        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
+        pushButtonPlayTrajectory = new QPushButton(groupBox_4);
+        pushButtonPlayTrajectory->setObjectName(QStringLiteral("pushButtonPlayTrajectory"));
+
+        horizontalLayout_4->addWidget(pushButtonPlayTrajectory);
+
+        pushButtonPauseTrajectory = new QPushButton(groupBox_4);
+        pushButtonPauseTrajectory->setObjectName(QStringLiteral("pushButtonPauseTrajectory"));
+
+        horizontalLayout_4->addWidget(pushButtonPauseTrajectory);
+
+        pushButtonStopTrajectory = new QPushButton(groupBox_4);
+        pushButtonStopTrajectory->setObjectName(QStringLiteral("pushButtonStopTrajectory"));
+
+        horizontalLayout_4->addWidget(pushButtonStopTrajectory);
+
+        horizontalSliderJumpToTrajectory = new QSlider(groupBox_4);
+        horizontalSliderJumpToTrajectory->setObjectName(QStringLiteral("horizontalSliderJumpToTrajectory"));
+        horizontalSliderJumpToTrajectory->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_4->addWidget(horizontalSliderJumpToTrajectory);
+
+
+        horizontalLayout_3->addWidget(groupBox_4);
+
+
+        verticalLayout->addLayout(horizontalLayout_3);
+
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setSpacing(6);
+        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+        treeView = new QTreeView(centralwidget);
+        treeView->setObjectName(QStringLiteral("treeView"));
+
+        horizontalLayout_2->addWidget(treeView);
+
+        listView = new QListView(centralwidget);
+        listView->setObjectName(QStringLiteral("listView"));
+
+        horizontalLayout_2->addWidget(listView);
+
+
+        verticalLayout->addLayout(horizontalLayout_2);
 
         MainWindow->setCentralWidget(centralwidget);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QStringLiteral("statusbar"));
         MainWindow->setStatusBar(statusbar);
-        toolBar = new QToolBar(MainWindow);
-        toolBar->setObjectName(QStringLiteral("toolBar"));
-        MainWindow->addToolBar(Qt::TopToolBarArea, toolBar);
-
-        toolBar->addAction(actionPlayFromKinect);
-        toolBar->addAction(actionPlayFromFile);
-        toolBar->addAction(actionStopPlaying);
-        toolBar->addAction(actionStartAlgorithm);
-        toolBar->addAction(actionStopAlgorithm);
-        toolBar->addAction(actionStartRecording);
-        toolBar->addAction(actionStopRecording);
 
         retranslateUi(MainWindow);
-        QObject::connect(actionPlayFromKinect, SIGNAL(triggered()), MainWindow, SLOT(playFromKinect()));
-        QObject::connect(actionPlayFromFile, SIGNAL(triggered()), MainWindow, SLOT(playFromFile()));
-        QObject::connect(actionStartAlgorithm, SIGNAL(triggered()), MainWindow, SLOT(startAlgorithm()));
-        QObject::connect(actionStopAlgorithm, SIGNAL(triggered()), MainWindow, SLOT(stopAlgorithm()));
-        QObject::connect(actionStartRecording, SIGNAL(triggered()), MainWindow, SLOT(startRecording()));
-        QObject::connect(actionStopRecording, SIGNAL(triggered()), MainWindow, SLOT(stopRecording()));
-        QObject::connect(actionStopPlaying, SIGNAL(triggered()), MainWindow, SLOT(stopPlaying()));
+        QObject::connect(pushButtonPauseTrajectory, SIGNAL(clicked()), MainWindow, SLOT(pauseTrajectory()));
+        QObject::connect(pushButtonPlayFromFile, SIGNAL(clicked()), MainWindow, SLOT(playFromFile()));
+        QObject::connect(pushButtonPlayFromKinect, SIGNAL(clicked()), MainWindow, SLOT(playFromKinect()));
+        QObject::connect(pushButtonStartAlgorithm, SIGNAL(clicked()), MainWindow, SLOT(startAlgorithm()));
+        QObject::connect(pushButtonStartRecording, SIGNAL(clicked()), MainWindow, SLOT(startRecording()));
+        QObject::connect(pushButtonStopAlgorithm, SIGNAL(clicked()), MainWindow, SLOT(stopAlgorithm()));
+        QObject::connect(pushButtonStopPlaying, SIGNAL(clicked()), MainWindow, SLOT(stopPlaying()));
+        QObject::connect(pushButtonStopRecording, SIGNAL(clicked()), MainWindow, SLOT(stopRecording()));
+        QObject::connect(pushButtonStopTrajectory, SIGNAL(clicked()), MainWindow, SLOT(stopTrajectory()));
+        QObject::connect(horizontalSliderJumpToTrajectory, SIGNAL(valueChanged(int)), MainWindow, SLOT(jumpToTrajectory(int)));
+        QObject::connect(pushButtonPlayTrajectory, SIGNAL(clicked()), MainWindow, SLOT(playTrajectory()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -98,35 +201,20 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
-        actionPlayFromFile->setText(QApplication::translate("MainWindow", "playFromFile", 0));
-#ifndef QT_NO_TOOLTIP
-        actionPlayFromFile->setToolTip(QApplication::translate("MainWindow", "Lets You choose an *.oni file and starts to play it. You can then start the algorithm.", 0));
-#endif // QT_NO_TOOLTIP
-        actionPlayFromKinect->setText(QApplication::translate("MainWindow", "playFromKinect", 0));
-#ifndef QT_NO_TOOLTIP
-        actionPlayFromKinect->setToolTip(QApplication::translate("MainWindow", "Checks if there is a Kinect device plugged in and starts to capture and display data using the sensor. You can then start the algorithm.", 0));
-#endif // QT_NO_TOOLTIP
-        actionStopPlaying->setText(QApplication::translate("MainWindow", "stopPlaying", 0));
-#ifndef QT_NO_TOOLTIP
-        actionStopPlaying->setToolTip(QApplication::translate("MainWindow", "Stops playing showing data from any source", 0));
-#endif // QT_NO_TOOLTIP
-        actionStartAlgorithm->setText(QApplication::translate("MainWindow", "startAlgorithm", 0));
-#ifndef QT_NO_TOOLTIP
-        actionStartAlgorithm->setToolTip(QApplication::translate("MainWindow", "Starts to perform the algorithm on chosen the source and to visualize its results.", 0));
-#endif // QT_NO_TOOLTIP
-        actionStopAlgorithm->setText(QApplication::translate("MainWindow", "stopAlgorithm", 0));
-#ifndef QT_NO_TOOLTIP
-        actionStopAlgorithm->setToolTip(QApplication::translate("MainWindow", "Stops the algorithm and visualization", 0));
-#endif // QT_NO_TOOLTIP
-        actionStartRecording->setText(QApplication::translate("MainWindow", "startRecording", 0));
-#ifndef QT_NO_TOOLTIP
-        actionStartRecording->setToolTip(QApplication::translate("MainWindow", "Once the algorithm is running, You can start to record its results. After choosing this option, You have to choose where to store the recording", 0));
-#endif // QT_NO_TOOLTIP
-        actionStopRecording->setText(QApplication::translate("MainWindow", "stopRecording", 0));
-#ifndef QT_NO_TOOLTIP
-        actionStopRecording->setToolTip(QApplication::translate("MainWindow", "Stop the recording process", 0));
-#endif // QT_NO_TOOLTIP
-        toolBar->setWindowTitle(QApplication::translate("MainWindow", "toolBar", 0));
+        groupBox_2->setTitle(QApplication::translate("MainWindow", "Image source", 0));
+        pushButtonPlayFromKinect->setText(QApplication::translate("MainWindow", "Grab Frames from Kinect", 0));
+        pushButtonPlayFromFile->setText(QApplication::translate("MainWindow", "Grab frames from ONI file", 0));
+        pushButtonStopPlaying->setText(QApplication::translate("MainWindow", "Stop grabbing from any source", 0));
+        groupBox_3->setTitle(QApplication::translate("MainWindow", "Algorithm management", 0));
+        pushButtonStartAlgorithm->setText(QApplication::translate("MainWindow", "Start algorithm", 0));
+        pushButtonStopAlgorithm->setText(QApplication::translate("MainWindow", "Stop algorithm", 0));
+        groupBox->setTitle(QApplication::translate("MainWindow", "Recording", 0));
+        pushButtonStartRecording->setText(QApplication::translate("MainWindow", "Start recording", 0));
+        pushButtonStopRecording->setText(QApplication::translate("MainWindow", "Stop recording", 0));
+        groupBox_4->setTitle(QApplication::translate("MainWindow", "Trajectory player", 0));
+        pushButtonPlayTrajectory->setText(QApplication::translate("MainWindow", "Open *.trj and Play", 0));
+        pushButtonPauseTrajectory->setText(QApplication::translate("MainWindow", "Pause", 0));
+        pushButtonStopTrajectory->setText(QApplication::translate("MainWindow", "Stop", 0));
     } // retranslateUi
 
 };

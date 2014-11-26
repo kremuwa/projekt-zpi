@@ -112,7 +112,7 @@ void Algorithm::run()
 
 		PointCloudT::Ptr cloud(new PointCloudT);
 		bool new_cloud_available_flag = false;
-		pcl::Grabber* interface = new pcl::OpenNIGrabber(currentFile);
+		pcl::OpenNIGrabber* interface = new pcl::OpenNIGrabber(currentFile);
 		boost::function<void(const pcl::PointCloud<pcl::PointXYZRGBA>::ConstPtr&)> f =
 			boost::bind(&cloud_cb_, _1, cloud, &new_cloud_available_flag);
 		interface->registerCallback(f);
@@ -184,9 +184,13 @@ void Algorithm::run()
 
 					person_nr = 0;
 
+					centroids_prev.clear();
+					centroids_curr.clear();
+
 				}
 
 				// Draw cloud and people bounding boxes in the viewer:
+
 				viewer->removeAllPointClouds();
 				viewer->removeAllShapes();
 
@@ -287,7 +291,7 @@ void Algorithm::run()
 
 						isRecordingJustEnabled = false;
 
-						recorder.startWriting(currentTRJdir, currentPCDdir);
+						myWriter.startWriting(currentTRJdir, currentPCDdir);
 
 					}
 
@@ -309,14 +313,10 @@ void Algorithm::run()
 			{
 
 				interface->stop(); // stop grabbing the frames
-
+				
 				viewer->close(); // close the visualizer
 
-				delete viewer;
-
 				break;
-
-				// TODO: brakuje kilku delete'ów rzeczy tworzonych przez kod Krzyœka (memory leak)
 
 			}
 

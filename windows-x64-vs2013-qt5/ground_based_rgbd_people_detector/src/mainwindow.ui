@@ -7,206 +7,327 @@
     <x>0</x>
     <y>0</y>
     <width>740</width>
-    <height>589</height>
+    <height>625</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QColumnView" name="columnView"/>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="title">
+         <string>Image source</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QPushButton" name="pushButtonPlayFromKinect">
+           <property name="text">
+            <string>Grab Frames from Kinect</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButtonPlayFromFile">
+           <property name="text">
+            <string>Grab frames from ONI file</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButtonStopPlaying">
+           <property name="text">
+            <string>Stop grabbing from any source</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_3">
+        <property name="title">
+         <string>Algorithm management</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QPushButton" name="pushButtonStartAlgorithm">
+           <property name="text">
+            <string>Start algorithm</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButtonStopAlgorithm">
+           <property name="text">
+            <string>Stop algorithm</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string>Recording</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QPushButton" name="pushButtonStartRecording">
+           <property name="text">
+            <string>Start recording</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButtonStopRecording">
+           <property name="text">
+            <string>Stop recording</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QGroupBox" name="groupBox_4">
+        <property name="title">
+         <string>Trajectory player</string>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QPushButton" name="pushButtonPlayTrajectory">
+           <property name="text">
+            <string>Open *.trj and Play</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButtonPauseTrajectory">
+           <property name="text">
+            <string>Pause</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButtonStopTrajectory">
+           <property name="text">
+            <string>Stop</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="horizontalSliderJumpToTrajectory">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QTreeView" name="treeView"/>
+      </item>
+      <item>
+       <widget class="QListView" name="listView"/>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QToolBar" name="toolBar">
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="actionPlayFromKinect"/>
-   <addaction name="actionPlayFromFile"/>
-   <addaction name="actionStopPlaying"/>
-   <addaction name="actionStartAlgorithm"/>
-   <addaction name="actionStopAlgorithm"/>
-   <addaction name="actionStartRecording"/>
-   <addaction name="actionStopRecording"/>
-  </widget>
-  <action name="actionPlayFromFile">
-   <property name="text">
-    <string>playFromFile</string>
-   </property>
-   <property name="toolTip">
-    <string>Lets You choose an *.oni file and starts to play it. You can then start the algorithm.</string>
-   </property>
-  </action>
-  <action name="actionPlayFromKinect">
-   <property name="text">
-    <string>playFromKinect</string>
-   </property>
-   <property name="toolTip">
-    <string>Checks if there is a Kinect device plugged in and starts to capture and display data using the sensor. You can then start the algorithm.</string>
-   </property>
-  </action>
-  <action name="actionStopPlaying">
-   <property name="text">
-    <string>stopPlaying</string>
-   </property>
-   <property name="toolTip">
-    <string>Stops playing showing data from any source</string>
-   </property>
-  </action>
-  <action name="actionStartAlgorithm">
-   <property name="text">
-    <string>startAlgorithm</string>
-   </property>
-   <property name="toolTip">
-    <string>Starts to perform the algorithm on chosen the source and to visualize its results.</string>
-   </property>
-  </action>
-  <action name="actionStopAlgorithm">
-   <property name="text">
-    <string>stopAlgorithm</string>
-   </property>
-   <property name="toolTip">
-    <string>Stops the algorithm and visualization</string>
-   </property>
-  </action>
-  <action name="actionStartRecording">
-   <property name="text">
-    <string>startRecording</string>
-   </property>
-   <property name="toolTip">
-    <string>Once the algorithm is running, You can start to record its results. After choosing this option, You have to choose where to store the recording</string>
-   </property>
-  </action>
-  <action name="actionStopRecording">
-   <property name="text">
-    <string>stopRecording</string>
-   </property>
-   <property name="toolTip">
-    <string>Stop the recording process</string>
-   </property>
-  </action>
  </widget>
  <resources/>
  <connections>
   <connection>
-   <sender>actionPlayFromKinect</sender>
-   <signal>triggered()</signal>
+   <sender>pushButtonPauseTrajectory</sender>
+   <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>playFromKinect()</slot>
+   <slot>pauseTrajectory()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
+     <x>165</x>
+     <y>166</y>
     </hint>
     <hint type="destinationlabel">
      <x>369</x>
-     <y>294</y>
+     <y>312</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>actionPlayFromFile</sender>
-   <signal>triggered()</signal>
+   <sender>pushButtonPlayFromFile</sender>
+   <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>playFromFile()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
+     <x>127</x>
+     <y>73</y>
     </hint>
     <hint type="destinationlabel">
      <x>369</x>
-     <y>294</y>
+     <y>312</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>actionStartAlgorithm</sender>
-   <signal>triggered()</signal>
+   <sender>pushButtonPlayFromKinect</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>playFromKinect()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>127</x>
+     <y>44</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>369</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonStartAlgorithm</sender>
+   <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>startAlgorithm()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
+     <x>369</x>
+     <y>53</y>
     </hint>
     <hint type="destinationlabel">
      <x>369</x>
-     <y>294</y>
+     <y>312</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>actionStopAlgorithm</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>stopAlgorithm()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>369</x>
-     <y>294</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionStartRecording</sender>
-   <signal>triggered()</signal>
+   <sender>pushButtonStartRecording</sender>
+   <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>startRecording()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
+     <x>611</x>
+     <y>53</y>
     </hint>
     <hint type="destinationlabel">
      <x>369</x>
-     <y>294</y>
+     <y>312</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>actionStopRecording</sender>
-   <signal>triggered()</signal>
+   <sender>pushButtonStopAlgorithm</sender>
+   <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>stopRecording()</slot>
+   <slot>stopAlgorithm()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>369</x>
-     <y>294</y>
+     <y>91</y>
     </hint>
     <hint type="destinationlabel">
      <x>369</x>
-     <y>294</y>
+     <y>312</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>actionStopPlaying</sender>
-   <signal>triggered()</signal>
+   <sender>pushButtonStopPlaying</sender>
+   <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>stopPlaying()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
+     <x>127</x>
+     <y>102</y>
     </hint>
     <hint type="destinationlabel">
      <x>369</x>
-     <y>294</y>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonStopRecording</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>stopRecording()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>611</x>
+     <y>91</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>369</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonStopTrajectory</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>stopTrajectory()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>246</x>
+     <y>166</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>369</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSliderJumpToTrajectory</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>jumpToTrajectory(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>504</x>
+     <y>166</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>369</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButtonPlayTrajectory</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>playTrajectory()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>70</x>
+     <y>166</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>369</x>
+     <y>312</y>
     </hint>
    </hints>
   </connection>
@@ -219,5 +340,9 @@
   <slot>stopAlgorithm()</slot>
   <slot>startRecording()</slot>
   <slot>stopRecording()</slot>
+  <slot>playTrajectory()</slot>
+  <slot>pauseTrajectory()</slot>
+  <slot>stopTrajectory()</slot>
+  <slot>jumpToTrajectory(int)</slot>
  </slots>
 </ui>

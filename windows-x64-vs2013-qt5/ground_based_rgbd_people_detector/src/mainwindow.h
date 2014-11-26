@@ -5,6 +5,7 @@
 #include <QtWidgets/QFileDialog>
 #include "ui_mainwindow.h"
 #include "Algorithm.h"
+#include "Player.h"
 
 class MainWindow : public QMainWindow
 {
@@ -23,9 +24,16 @@ public slots:
 	void startRecording();
 	void stopRecording();
 
+	void openAndPlayTrajectory();
+	void pauseTrajectory();
+	void stopTrajectory();
+	void jumpToTrajectory(int frame);
+
 private:
 	Ui::MainWindow ui;
 	Algorithm algorithm;
+
+	Player myPlayer;
 };
 
 #endif // MAINWINDOW_H
