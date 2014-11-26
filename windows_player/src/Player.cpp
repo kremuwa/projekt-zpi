@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "reader.h"
 
 // debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only!
 // debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only! debug only!
@@ -133,9 +134,6 @@ void Player::stop(){
 
 void Player::play(){
 	this->thread=boost::thread (&play_thread, this);
-	boost::this_thread::sleep(boost::posix_time::milliseconds(15000));
-	//this->stop();
-	//thread.join();
 }
 
 

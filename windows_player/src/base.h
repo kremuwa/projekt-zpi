@@ -4,6 +4,7 @@
 #include <pcl/console/parse.h>
 #include <pcl/common/time.h>
 #include <pcl/visualization/pcl_visualizer.h> 
+#include <pcl/io/pcd_io.h>
 #include <pcl/io/openni_grabber.h>
 #include <pcl/sample_consensus/sac_model_plane.h>
 #include <pcl/people/ground_based_people_detection_app.h>
@@ -15,6 +16,8 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <windows.h>
+#include <time.h>
 
 typedef pcl::PointXYZRGBA PointT;
 typedef pcl::PointCloud<PointT> PointCloudT;

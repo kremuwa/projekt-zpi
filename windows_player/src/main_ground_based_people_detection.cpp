@@ -4,13 +4,13 @@ enum { COLS = 640, ROWS = 480 };
 
 int main (int argc, char** argv) {
 
-  boost::this_thread::sleep(boost::posix_time::milliseconds(3000));
+  boost::this_thread::sleep(boost::posix_time::milliseconds(2000));
 
   Player play = Player();
   play.play();
 
-  //viewer.spinOnce();
-  //while (!viewer.wasStopped()) { }
+  // symuluje powiedzmy nieskonczonej petli utrzymujacej GUI przy zyciu.
+  boost::this_thread::sleep(boost::posix_time::milliseconds(15000));
 
   return 0;
 }

@@ -1,41 +1,31 @@
 #include "reader.h"
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <windows.h>
-#include <time.h>
-#include <pcl/io/pcd_io.h>
-#include <pcl/point_types.h>
 
 using namespace std;
 
-reader::reader(int frames) {
-	totalFrames = frames;
-	curFrame = 1;
-}
+Reader::Reader() {}
+Reader::~Reader() {}
 
-void reader::startReading(string& trjPath) {
-	trjFile.open(trjPath);
-	if (trjFile.is_open() == true)
-	{
-		getline(trjFile, pcdPath);
+void Reader::startReading(string& trjPath) {
+	this->trjFile.open(trjPath);
+
+	if (trjFile.is_open() == true) {
+		getline(this->trjFile, this->pcdPath);
 
 		string line;
-		while (getline(trjFile, line)) {
-			parseLine(line);
+		while (getline(this->trjFile, line)) {
+			this->parseLine(line);
 		}
 		
-
-		totalFrames = bboxes.size();
-		curFrame = 1;
+		this->totalFrames = this->bboxes.size();
+		this->curFrame = 1;
 	}
 	else {
 		cout << "Nie znaleziono pliku .trj" << endl;
-		totalFrames = -1;
+		this->totalFrames = -1;
 	}
 }
 
-void reader::parseLine(string line) {
+void Reader::parseLine(string line) {
 	vector<cubeStruct> resultCubes;
 	vector<string> cubes = explode(line, '\t');
 	istringstream iss(cubes[0]);
@@ -56,7 +46,7 @@ void reader::parseLine(string line) {
 	bboxes.push_back(make_pair(time, resultCubes));
 }
 
-vector<string> reader::explode(const string& str, const char delimiter)
+vector<string> Reader::explode(const string& str, const char delimiter)
 {
 	vector<string> elements;
 	stringstream stream(str);
@@ -67,7 +57,7 @@ vector<string> reader::explode(const string& str, const char delimiter)
 	return elements;
 }
 
-frameStruct reader::read() {
+frameStruct Reader::read() {
 	frameStruct result;
 	if (curFrame <= totalFrames)
 	{
@@ -87,24 +77,24 @@ frameStruct reader::read() {
 }
 
 
-int reader::getTotalFrames() {
+int Reader::getTotalFrames() {
 	return totalFrames;
 }
 
-int reader::getCurFrame() {
+int Reader::getCurFrame() {
 	return curFrame;
 }
 
-void reader::jumpTo(int frame) {
+void Reader::jumpTo(int frame) {
 	curFrame = frame;
 }
 
-void reader::stopReading() {
+void Reader::stopReading() {
 	trjFile.close();
 	bboxes.clear();
 }
 
-string reader::createFilePath(string& directoryPath, string& fileName) {
+string Reader::createFilePath(string& directoryPath, string& fileName) {
 	if (directoryPath.back() != '\\') {
 		return directoryPath + "\\" + fileName;
 	}

@@ -1,9 +1,10 @@
 #pragma once
 
 #include "base.h"
+#include "reader.h"
 
 
-class Reader {
+/*class Reader {
 	int current_frame;
 	int total_frames;
 
@@ -16,7 +17,7 @@ public:
 	void jumpTo(int frame);
 	int getCurFrame();
 	int getTotalFrames();
-};
+};*/
 
 // -----------------------------------------------
 
@@ -26,7 +27,6 @@ class Player {
 	boost::thread thread;
 	bool pause_toggle;
 public:
-	//VisualiserT *viewer;
 	int current_frame;
 	int total_frames;
 	Reader *reader;

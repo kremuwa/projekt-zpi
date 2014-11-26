@@ -1,11 +1,4 @@
 #include "writer.h"
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <windows.h>
-#include <time.h>
-#include <pcl/io/pcd_io.h>
-#include <pcl/point_types.h>
 
 using namespace std;
 
