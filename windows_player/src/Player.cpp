@@ -158,17 +158,16 @@ void play_thread(Player *player){
 
 			//boost::shared_ptr<PointCloudT> cloud = boost::make_shared<PointCloudT>(*frame.cloud);
 			PointCloudT::Ptr cloud(new PointCloudT());
-
-			//cloud = frame.cloud;
+			cloud = frame.cloud;
 
 			// DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG 
 			// DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG 
 			// DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
 
 			// normalnie to reader robi.
-			if (currentFrame == 1){fileName = "C:\\TEMP\\3.pcd";}
-			else{fileName = "C:\\TEMP\\2.pcd";}
-			if (pcl::io::loadPCDFile<PointT>(fileName, *cloud) == -1){std::cout << "Wyst¹pi³ b³¹d podczas wczytywania pliku: " << "C:\\TEMP\\3.pcd" << std::endl;}
+			//if (currentFrame == 1){fileName = "C:\\TEMP\\3.pcd";}
+			//else{fileName = "C:\\TEMP\\2.pcd";}
+			//if (pcl::io::loadPCDFile<PointT>(fileName, *cloud) == -1){std::cout << "Wyst¹pi³ b³¹d podczas wczytywania pliku: " << "C:\\TEMP\\3.pcd" << std::endl;}
 			// END DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
 			// END DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
 			// END DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
