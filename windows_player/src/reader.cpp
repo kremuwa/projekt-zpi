@@ -11,7 +11,7 @@ void Reader::startReading(string& trjPath) {
 
 		if (trjFile.is_open() == true) {
 			getline(trjFile, pcdPath);
-
+			
 			string line;
 			while (getline(trjFile, line)) {
 				this->parseLine(line);
@@ -45,7 +45,8 @@ void Reader::parseLine(string line) {
 		cube.y_min = atof(coords[3].c_str());
 		cube.y_max = atof(coords[4].c_str());
 		cube.z_min = atof(coords[5].c_str());
-		cube.x_max = atof(coords[6].c_str());
+		cube.z_max = atof(coords[6].c_str());
+
 		resultCubes.push_back(cube);
 	}
 	bboxes.push_back(make_pair(time, resultCubes));
@@ -66,7 +67,8 @@ frameStruct Reader::read() {
 	frameStruct result;
 	if (curFrame <= totalFrames)
 	{
-		string path = createFilePath(pcdPath, to_string(curFrame));
+		string pcdExt = "pdc";
+		string path = createFilePath(pcdPath, to_string(curFrame), pcdExt);
 		PointCloudT::Ptr cloud(new PointCloudT);
 		if (pcl::io::loadPCDFile<PointT>(path, *cloud) == -1)
 		{
@@ -99,9 +101,9 @@ void Reader::stopReading() {
 	bboxes.clear();
 }
 
-string Reader::createFilePath(string& directoryPath, string& fileName) {
+string Reader::createFilePath(string& directoryPath, string& fileName, string& ext) {
 	if (directoryPath.back() != '\\') {
-		return directoryPath + "\\" + fileName;
+		return directoryPath + "\\" + fileName + "." + ext;
 	}
-	return directoryPath + fileName;
+	return directoryPath + fileName + "." + ext;
 }

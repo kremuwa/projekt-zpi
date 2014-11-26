@@ -19,7 +19,7 @@ public:
 
 private:
 	string createFileName(int i);
-	string createFilePath(string& directoryPath, string& fileName);
+	string createFilePath(string& directoryPath, string& fileName, string& ext);
 	bool dirExists(string& path);
 	bool fileExists(string& path);
 	double diffclock(clock_t clock1, clock_t clock2);

@@ -6,6 +6,7 @@
 using namespace std;
 
 class Reader {
+
 	int curFrame;
 	int totalFrames;
 	ifstream trjFile;
@@ -21,7 +22,7 @@ public:
 	int getTotalFrames();
 	void stopReading();
 private:
-	string createFilePath(string& directoryPath, string& fileName);
+	string createFilePath(string& directoryPath, string& fileName, string& ext);
 	void parseLine(string line);
 	vector<string> explode(const string& str, const char delimiter);
 };

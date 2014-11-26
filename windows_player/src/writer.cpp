@@ -9,12 +9,12 @@ void writer::startWriting(string& pcd_path, string& trjPath) {
 
 	if (dirExists(pcd_path)) {
 		int fileNum = 0;
-
-		while (fileExists(createFilePath(trjPath, createFileName(fileNum))) == true) {
+		string trjExt = "trj";
+		while (fileExists(createFilePath(trjPath, createFileName(fileNum), trjExt)) == true) {
 			fileNum++;
 		}
 
-		trjFile.open(createFilePath(trjPath, createFileName(fileNum)));
+		trjFile.open(createFilePath(trjPath, createFileName(fileNum), trjExt));
 		if (trjFile.is_open()) {
 			trjFile << pcdPath << endl;
 		}
@@ -26,7 +26,8 @@ void writer::startWriting(string& pcd_path, string& trjPath) {
 }
 
 void writer::write(PointCloudT pointCloud, vector < pair<string, PeopleClusterT > > bboxes) {
-	string path = createFilePath(pcdPath, to_string(curFrame));
+	string pcdExt = "pcd";
+	string path = createFilePath(pcdPath, to_string(curFrame), pcdExt);
 	pcl::io::savePCDFileASCII(path, pointCloud);
 	
 	int time = diffclock(clock(), startTime);
@@ -65,11 +66,11 @@ string writer::createFileName(int i) {
 	return ossMessage.str();
 }
 
-string writer::createFilePath(string& directoryPath, string& fileName) {
+string writer::createFilePath(string& directoryPath, string& fileName, string& ext) {
 	if (directoryPath.back() != '\\') {
-		return directoryPath + "\\" + fileName;
+		return directoryPath + "\\" + fileName + "." + ext;
 	}
-	return directoryPath + fileName;
+	return directoryPath + fileName + "." + ext;
 }
 
 void writer::stopWriting() {
