@@ -1,3 +1,29 @@
+/*
+
+Project: People RGB-D Detector
+Authors: Grzegorz Wójcicki, Micha³ Urbanek, Grzegorz Kozub, Mateusz Pasieka, Krzysztof Gieroñ, Jacek Pawelczak
+
+Copyright(c) <YEAR>, <OWNER>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met :
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and / or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.IN NO EVENT
+SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT(INCLUDING NEGLIGENCE
+OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+*/
+
+
 #include "Player.h"
 #include "reader.h"
 
@@ -144,24 +170,42 @@ void play_thread(Player *player){
 	int totalFrames = player->getTotalFrames();
 	int lastFrameTime = 0;
 	frameStruct frame;
+	string fileName;
 
 	VisualiserT viewer("PCL test");
 
 	while (currentFrame < totalFrames) {
 		if (player->getDebug()){ std::cout << "PLAY iteruje sie po klatkce " << currentFrame << std::endl; }
-		if (player->mutex.try_lock() && !player->getPause()) {
+		if (/*player->mutex.try_lock() && */!player->getPause()) {
 			viewer.addText("copyright by MU/GW/GK/KG/MP/JP", 50, 8);
 
 			if (player->getDebug()){ std::cout << "PLAY rysuje" << std::endl; }
 			frame = player->reader->read();
 
-			boost::shared_ptr<PointCloudT> cloud = boost::make_shared<PointCloudT>(*frame.cloud);
+			//boost::shared_ptr<PointCloudT> cloud = boost::make_shared<PointCloudT>(*frame.cloud);
+			PointCloudT::Ptr cloud(new PointCloudT());
+			cloud = frame.cloud;
+
+			// DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG 
+			// DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG 
+			// DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
+
+			// normalnie to reader robi.
+			//if (currentFrame == 1){fileName = "C:\\TEMP\\3.pcd";}
+			//else{fileName = "C:\\TEMP\\2.pcd";}
+			//if (pcl::io::loadPCDFile<PointT>(fileName, *cloud) == -1){std::cout << "Wyst¹pi³ b³¹d podczas wczytywania pliku: " << "C:\\TEMP\\3.pcd" << std::endl;}
+			// END DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
+			// END DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
+			// END DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
+
+
+			
 			viewer.removeAllPointClouds();
 			viewer.removeAllShapes();
 
 			pcl::visualization::PointCloudColorHandlerRGBField<PointT> rgb(cloud);
 			viewer.addPointCloud<PointT>(cloud, rgb, "input_cloud");
-			viewer.setCameraPosition(-4, -1, -3, 0, -1, 0, 0);
+			viewer.setCameraPosition(-2, -1, -3, 0, 1, 0, 0);
 
 			for (unsigned short int i = 0; i < frame.people.size(); i++){
 				player->drawCube(frame.people.at(i), &viewer);
@@ -171,13 +215,13 @@ void play_thread(Player *player){
 
 			//w wersji zlaczonej z Grzeskiem K.
 			//boost::this_thread::sleep(boost::posix_time::milliseconds(frame.frame_time - lastFrameTime));
-			boost::this_thread::sleep(boost::posix_time::milliseconds(2000));
+			boost::this_thread::sleep(boost::posix_time::milliseconds(5000));
 
 			lastFrameTime = frame.frame_time;
 
 			currentFrame = player->getCurFrame();
 
-			player->mutex.unlock();
+			//player->mutex.unlock();
 		}
 		else {
 			if (player->getDebug()){ std::cout << "PLAY czeka na koniec pauzy lub mutex " << std::endl; }
@@ -187,6 +231,12 @@ void play_thread(Player *player){
 	std::cout << "press 'Q' to quit" << std::endl;
 	viewer.spin();
 }
+
+
+
+
+
+
 
 void Player::drawLine(cubeStruct cube, bool showName, VisualiserT *viewer) {
 	PointT p1, p2;

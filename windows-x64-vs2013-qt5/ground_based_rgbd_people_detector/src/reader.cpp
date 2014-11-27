@@ -6,22 +6,27 @@ Reader::Reader() {}
 Reader::~Reader() {}
 
 void Reader::startReading(string& trjPath) {
-	this->trjFile.open(trjPath);
+	try {
+		trjFile.open(trjPath);
 
-	if (trjFile.is_open() == true) {
-		getline(this->trjFile, this->pcdPath);
-
-		string line;
-		while (getline(this->trjFile, line)) {
-			this->parseLine(line);
-		}
+		if (trjFile.is_open() == true) {
+			getline(trjFile, pcdPath);
+			
+			string line;
+			while (getline(trjFile, line)) {
+				this->parseLine(line);
+			}
 		
-		this->totalFrames = this->bboxes.size();
-		this->curFrame = 1;
+			totalFrames = this->bboxes.size();
+			curFrame = 1;
+		}
+		else {
+			cout << "Nie znaleziono pliku .trj" << endl;
+			this->totalFrames = -1;
+		}
 	}
-	else {
-		cout << "Nie znaleziono pliku .trj" << endl;
-		this->totalFrames = -1;
+	catch (...){
+		throw;
 	}
 }
 
@@ -41,6 +46,7 @@ void Reader::parseLine(string line) {
 		cube.y_max = atof(coords[4].c_str());
 		cube.z_min = atof(coords[5].c_str());
 		cube.z_max = atof(coords[6].c_str());
+
 		resultCubes.push_back(cube);
 	}
 	bboxes.push_back(make_pair(time, resultCubes));
@@ -61,14 +67,17 @@ frameStruct Reader::read() {
 	frameStruct result;
 	if (curFrame <= totalFrames)
 	{
-		string path = createFilePath(pcdPath, to_string(curFrame));
-		PointCloudT::Ptr cloud(new PointCloudT);
+		string pcdExt = "pcd";
+		string path = createFilePath(pcdPath, to_string(curFrame), pcdExt);
+		PointCloudT::Ptr cloud(new PointCloudT());
+		//PointCloudT::Ptr cloud(new PointCloudT);
+		//PointCloudT *cloud;
 		if (pcl::io::loadPCDFile<PointT>(path, *cloud) == -1)
 		{
 			cout << "Wyst¹pi³ b³¹d podczas wczytywania pliku: " << path;
 		}
 		
-		result.cloud = cloud.get();
+		result.cloud = cloud;
 		result.frame_time = bboxes[curFrame].first;
 		result.people = bboxes[curFrame].second;
 		curFrame++;
@@ -94,9 +103,9 @@ void Reader::stopReading() {
 	bboxes.clear();
 }
 
-string Reader::createFilePath(string& directoryPath, string& fileName) {
+string Reader::createFilePath(string& directoryPath, string& fileName, string& ext) {
 	if (directoryPath.back() != '\\') {
-		return directoryPath + "\\" + fileName;
+		return directoryPath + "\\" + fileName + "." + ext;
 	}
-	return directoryPath + fileName;
+	return directoryPath + fileName + "." + ext;
 }

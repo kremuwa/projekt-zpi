@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[16];
-    char stringdata[199];
+    QByteArrayData data[17];
+    char stringdata[222];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -44,14 +44,15 @@ QT_MOC_LITERAL(11, 141, 14),
 QT_MOC_LITERAL(12, 156, 16),
 QT_MOC_LITERAL(13, 173, 5),
 QT_MOC_LITERAL(14, 179, 13),
-QT_MOC_LITERAL(15, 193, 5)
+QT_MOC_LITERAL(15, 193, 5),
+QT_MOC_LITERAL(16, 199, 22)
     },
     "MainWindow\0playFromKinect\0\0playFromFile\0"
     "stopPlaying\0startAlgorithm\0stopAlgorithm\0"
     "startRecording\0stopRecording\0"
     "playTrajectory\0pauseTrajectory\0"
     "stopTrajectory\0jumpToTrajectory\0frame\0"
-    "listDirectory\0index"
+    "listDirectory\0index\0playTrajectoryFromList"
 };
 #undef QT_MOC_LITERAL
 
@@ -61,7 +62,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      12,   14, // methods
+      13,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -69,18 +70,19 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   74,    2, 0x0a /* Public */,
-       3,    0,   75,    2, 0x0a /* Public */,
-       4,    0,   76,    2, 0x0a /* Public */,
-       5,    0,   77,    2, 0x0a /* Public */,
-       6,    0,   78,    2, 0x0a /* Public */,
-       7,    0,   79,    2, 0x0a /* Public */,
-       8,    0,   80,    2, 0x0a /* Public */,
-       9,    0,   81,    2, 0x0a /* Public */,
-      10,    0,   82,    2, 0x0a /* Public */,
-      11,    0,   83,    2, 0x0a /* Public */,
-      12,    1,   84,    2, 0x0a /* Public */,
-      14,    1,   87,    2, 0x0a /* Public */,
+       1,    0,   79,    2, 0x0a /* Public */,
+       3,    0,   80,    2, 0x0a /* Public */,
+       4,    0,   81,    2, 0x0a /* Public */,
+       5,    0,   82,    2, 0x0a /* Public */,
+       6,    0,   83,    2, 0x0a /* Public */,
+       7,    0,   84,    2, 0x0a /* Public */,
+       8,    0,   85,    2, 0x0a /* Public */,
+       9,    0,   86,    2, 0x0a /* Public */,
+      10,    0,   87,    2, 0x0a /* Public */,
+      11,    0,   88,    2, 0x0a /* Public */,
+      12,    1,   89,    2, 0x0a /* Public */,
+      14,    1,   92,    2, 0x0a /* Public */,
+      16,    1,   95,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void,
@@ -94,6 +96,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Int,   13,
+    QMetaType::Void, QMetaType::QModelIndex,   15,
     QMetaType::Void, QMetaType::QModelIndex,   15,
 
        0        // eod
@@ -116,6 +119,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 9: _t->stopTrajectory(); break;
         case 10: _t->jumpToTrajectory((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 11: _t->listDirectory((*reinterpret_cast< QModelIndex(*)>(_a[1]))); break;
+        case 12: _t->playTrajectoryFromList((*reinterpret_cast< QModelIndex(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -146,13 +150,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 12)
+        if (_id < 13)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 12;
+        _id -= 13;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 12)
+        if (_id < 13)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 12;
+        _id -= 13;
     }
     return _id;
 }
